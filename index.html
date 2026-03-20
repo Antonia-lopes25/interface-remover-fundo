@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LogoIA — Logos profissionais em segundos</title>
+<title>RemoveBG — Remova o fundo da sua imagem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #080C14;
@@ -31,26 +31,21 @@ body {
 
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background-image:
     linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
   background-size: 48px 48px;
-  pointer-events: none;
-  z-index: 0;
+  pointer-events: none; z-index: 0;
 }
 
 .glow {
-  position: fixed;
-  width: 600px; height: 600px;
-  border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-  z-index: 0;
+  position: fixed; width: 500px; height: 500px;
+  border-radius: 50%; filter: blur(120px);
+  pointer-events: none; z-index: 0;
 }
-.glow-1 { background: rgba(79,142,247,0.12); top: -200px; right: -100px; }
-.glow-2 { background: rgba(123,92,247,0.08); bottom: -100px; left: -100px; }
+.glow-1 { background: rgba(79,142,247,0.10); top: -150px; right: -100px; }
+.glow-2 { background: rgba(123,92,247,0.07); bottom: -100px; left: -100px; }
 
 nav {
   position: relative; z-index: 10;
@@ -78,8 +73,8 @@ nav {
 .hero {
   position: relative; z-index: 1;
   text-align: center;
-  padding: 80px 40px 60px;
-  max-width: 800px; margin: 0 auto;
+  padding: 60px 40px 40px;
+  max-width: 700px; margin: 0 auto;
 }
 
 .hero-tag {
@@ -89,7 +84,7 @@ nav {
   color: var(--accent);
   padding: 6px 16px; border-radius: 20px;
   font-size: 12px; font-weight: 500;
-  margin-bottom: 28px; letter-spacing: 0.5px;
+  margin-bottom: 24px; letter-spacing: 0.5px;
 }
 
 .hero-tag::before {
@@ -100,262 +95,222 @@ nav {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.5; transform:scale(.8); }
 }
 
 h1 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(36px, 6vw, 64px);
+  font-size: clamp(30px, 5vw, 52px);
   font-weight: 800; line-height: 1.1;
-  margin-bottom: 20px; letter-spacing: -1px;
+  margin-bottom: 16px; letter-spacing: -1px;
 }
 
 h1 span {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .hero-sub {
-  font-size: 18px; color: var(--muted);
+  font-size: 16px; color: var(--muted);
   font-weight: 300; line-height: 1.6;
-  max-width: 540px; margin: 0 auto 40px;
+  max-width: 480px; margin: 0 auto 40px;
 }
 
-.hero-stats {
-  display: flex; justify-content: center;
-  gap: 40px; margin-bottom: 60px;
-}
-
-.stat { text-align: center; }
-.stat-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px; font-weight: 800;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.stat-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-top: 2px; }
-
-.form-container {
+.main {
   position: relative; z-index: 1;
-  max-width: 760px; margin: 0 auto;
+  max-width: 860px; margin: 0 auto;
   padding: 0 20px 80px;
 }
 
-.form-card {
+/* UPLOAD AREA */
+.upload-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px; padding: 40px;
   position: relative; overflow: hidden;
+  margin-bottom: 20px;
 }
 
-.form-card::before {
+.upload-card::before {
   content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
+  position: absolute; top:0; left:0; right:0; height:1px;
   background: linear-gradient(90deg, transparent, rgba(79,142,247,0.4), transparent);
 }
 
-.form-title {
+.drop-zone {
+  border: 2px dashed rgba(79,142,247,0.25);
+  border-radius: 14px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: rgba(79,142,247,0.6);
+  background: rgba(79,142,247,0.04);
+}
+
+.drop-icon {
+  width: 56px; height: 56px;
+  background: rgba(79,142,247,0.1);
+  border: 1px solid rgba(79,142,247,0.2);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 24px;
+}
+
+.drop-title {
   font-family: 'Syne', sans-serif;
-  font-size: 20px; font-weight: 700; margin-bottom: 6px;
+  font-size: 16px; font-weight: 600; margin-bottom: 6px;
 }
 
-.form-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+.drop-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
 
-.form-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 16px; margin-bottom: 16px;
+.drop-formats {
+  display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
 }
 
-.form-group { display: flex; flex-direction: column; gap: 8px; }
-.form-group.full { grid-column: 1 / -1; }
+.format-pill {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; color: var(--muted);
+}
 
-label {
-  font-size: 12px; font-weight: 500;
-  color: var(--muted); letter-spacing: 0.5px;
+#fileInput { display: none; }
+
+.btn-browse {
+  background: rgba(79,142,247,0.1);
+  border: 1px solid rgba(79,142,247,0.2);
+  color: var(--accent);
+  padding: 10px 24px; border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s; margin-top: 16px;
+  display: inline-block;
+}
+
+.btn-browse:hover { background: rgba(79,142,247,0.2); }
+
+/* PREVIEW AREA */
+.preview-area {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-top: 24px;
+}
+
+.preview-area.active { display: grid; }
+
+.preview-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+}
+
+.preview-label {
+  padding: 12px 16px;
+  font-size: 11px; font-weight: 600;
+  color: var(--muted); letter-spacing: 1px;
   text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
 }
 
-input, select {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 13px 16px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px; outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  -webkit-appearance: none;
+.preview-img-wrap {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
 }
 
-input:focus, select:focus {
-  border-color: rgba(79,142,247,0.4);
-  box-shadow: 0 0 0 3px rgba(79,142,247,0.08);
+.preview-img-wrap.checker {
+  background: repeating-conic-gradient(#1a1f2e 0% 25%, #141824 0% 50%) 0 0 / 20px 20px;
 }
 
-input::placeholder { color: var(--muted); }
-select option { background: var(--surface2); }
-
-.color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-.color-input-wrap {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px 14px;
-  transition: border-color 0.2s;
+.preview-img-wrap img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; border-radius: 4px;
 }
 
-.color-input-wrap:focus-within { border-color: rgba(79,142,247,0.4); }
-
-.color-input-wrap input[type="color"] {
-  width: 28px; height: 28px;
-  border: none; border-radius: 6px;
-  padding: 0; cursor: pointer; background: none;
+/* LOADING OVERLAY */
+.loading-overlay {
+  display: none;
+  position: absolute; inset: 0;
+  background: rgba(8,12,20,0.85);
+  border-radius: 20px;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+  z-index: 10;
 }
 
-.color-input-wrap input[type="text"] {
-  background: none; border: none;
-  padding: 0; flex: 1; font-size: 13px; box-shadow: none;
-}
-
-.btn-submit {
-  width: 100%; padding: 16px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-  border: none; border-radius: 12px;
-  color: #fff;
-  font-family: 'Syne', sans-serif;
-  font-size: 16px; font-weight: 700;
-  cursor: pointer; margin-top: 24px;
-  transition: opacity 0.2s, transform 0.2s;
-  letter-spacing: 0.3px;
-}
-
-.btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-submit:active { transform: translateY(0); }
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-.loading-state { display: none; text-align: center; padding: 60px 20px; }
-.loading-state.active { display: block; }
+.loading-overlay.active { display: flex; }
 
 .loading-ring {
-  width: 64px; height: 64px;
+  width: 48px; height: 48px;
   border: 3px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.loading-text { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-.loading-sub { font-size: 13px; color: var(--muted); }
-
-.loading-steps {
-  display: flex; flex-direction: column; gap: 10px;
-  margin-top: 32px; text-align: left;
-  max-width: 300px; margin-left: auto; margin-right: auto;
+.loading-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px; font-weight: 600;
 }
 
-.step-item {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 13px; color: var(--muted); transition: color 0.3s;
+.loading-sub { font-size: 12px; color: var(--muted); }
+
+/* ACTIONS */
+.actions {
+  display: none; gap: 12px; margin-top: 20px;
 }
 
-.step-item.done { color: var(--success); }
-.step-item.active { color: var(--text); }
+.actions.active { display: flex; }
 
-.step-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--border); flex-shrink: 0; transition: background 0.3s;
+.btn-remove {
+  flex: 1; padding: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; border-radius: 12px;
+  color: #fff; font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.2s, transform 0.2s;
 }
 
-.step-item.done .step-dot { background: var(--success); }
-.step-item.active .step-dot { background: var(--accent); animation: pulse 1s infinite; }
-
-.result-state { display: none; }
-.result-state.active { display: block; }
-
-.result-header { text-align: center; margin-bottom: 32px; }
-
-.result-icon {
-  width: 56px; height: 56px;
-  background: rgba(34,197,94,0.1);
-  border: 1px solid rgba(34,197,94,0.2);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px; font-size: 24px;
-}
-
-.result-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
-.result-sub { font-size: 14px; color: var(--muted); }
-
-.logos-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 16px; margin-bottom: 24px;
-}
-
-.logo-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 14px; overflow: hidden;
-  transition: border-color 0.2s, transform 0.2s;
-}
-
-.logo-card:hover { border-color: rgba(79,142,247,0.3); transform: translateY(-2px); }
-
-.logo-preview {
-  width: 100%; aspect-ratio: 1;
-  background: repeating-conic-gradient(#1a1f2e 0% 25%, #141824 0% 50%) 0 0 / 20px 20px;
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-
-.logo-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-.logo-card-footer {
-  padding: 12px 14px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid var(--border);
-}
-
-.logo-name { font-size: 12px; font-weight: 500; color: var(--muted); }
+.btn-remove:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-remove:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
 .btn-download {
-  background: rgba(79,142,247,0.1);
-  border: 1px solid rgba(79,142,247,0.2);
-  color: var(--accent);
-  padding: 6px 14px; border-radius: 8px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  text-decoration: none; font-family: 'DM Sans', sans-serif;
-  transition: background 0.2s;
-}
-
-.btn-download:hover { background: rgba(79,142,247,0.2); }
-
-.btn-download-all {
-  width: 100%; padding: 14px;
+  padding: 14px 24px;
   background: var(--surface2);
-  border: 1px solid var(--border); border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   color: var(--text); font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 600; cursor: pointer;
-  margin-bottom: 12px; transition: border-color 0.2s, background 0.2s;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: border-color 0.2s;
+  display: none;
 }
 
-.btn-download-all:hover { border-color: rgba(79,142,247,0.3); background: rgba(79,142,247,0.05); }
+.btn-download:hover { border-color: rgba(79,142,247,0.4); }
+.btn-download.active { display: block; }
 
-.btn-new {
-  width: 100%; padding: 14px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none; border-radius: 12px; color: #fff;
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
-  cursor: pointer; transition: opacity 0.2s;
+.btn-reset {
+  padding: 14px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: border-color 0.2s, color 0.2s;
 }
 
-.btn-new:hover { opacity: 0.9; }
+.btn-reset:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
 
+/* ERROR */
 .error-msg {
   background: rgba(239,68,68,0.08);
   border: 1px solid rgba(239,68,68,0.2);
@@ -366,6 +321,44 @@ select option { background: var(--surface2); }
 
 .error-msg.active { display: block; }
 
+/* SUCCESS BADGE */
+.success-badge {
+  display: none;
+  align-items: center; gap: 8px;
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.2);
+  color: var(--success);
+  padding: 8px 14px; border-radius: 10px;
+  font-size: 13px; font-weight: 500;
+  margin-top: 12px;
+}
+
+.success-badge.active { display: flex; }
+
+/* FEATURES */
+.features {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-top: 20px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px;
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 24px; margin-bottom: 10px;
+}
+
+.feature-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 600; margin-bottom: 4px;
+}
+
+.feature-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
 footer {
   position: relative; z-index: 1;
   text-align: center; padding: 24px;
@@ -375,12 +368,11 @@ footer {
 
 @media (max-width: 600px) {
   nav { padding: 16px 20px; }
-  .hero { padding: 50px 20px 40px; }
-  .form-card { padding: 24px 20px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .logos-grid { grid-template-columns: 1fr; }
-  .hero-stats { gap: 24px; }
-  .color-row { grid-template-columns: 1fr; }
+  .hero { padding: 40px 20px 30px; }
+  .upload-card { padding: 24px 16px; }
+  .preview-area { grid-template-columns: 1fr; }
+  .features { grid-template-columns: 1fr; }
+  .actions { flex-wrap: wrap; }
 }
 </style>
 </head>
@@ -390,121 +382,230 @@ footer {
 <div class="glow glow-2"></div>
 
 <nav>
-  <div class="logo-brand">LogoIA</div>
-  <div class="nav-badge">✦ Powered by Gemini + BiRefNet</div>
+  <div class="logo-brand">RemoveBG</div>
+  <div class="nav-badge">✦ Powered by BiRefNet AI</div>
 </nav>
 
 <section class="hero">
-  <div class="hero-tag">Gerador de logos com inteligência artificial</div>
-  <h1>Seu logo profissional<br><span>em 30 segundos</span></h1>
-  <p class="hero-sub">Preencha os dados da sua marca e receba 4 conceitos de logo únicos, prontos para usar com fundo transparente.</p>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">4</div><div class="stat-label">LOGOS POR GERAÇÃO</div></div>
-    <div class="stat"><div class="stat-num">~30s</div><div class="stat-label">TEMPO MÉDIO</div></div>
-    <div class="stat"><div class="stat-num">PNG</div><div class="stat-label">FUNDO TRANSPARENTE</div></div>
-  </div>
+  <div class="hero-tag">Remoção de fundo com inteligência artificial</div>
+  <h1>Remova o fundo da<br><span>sua imagem grátis</span></h1>
+  <p class="hero-sub">Faça upload de qualquer imagem e receba o resultado com fundo transparente em segundos.</p>
 </section>
 
-<div class="form-container">
-  <div class="form-card">
+<div class="main">
 
-    <div id="formState">
-      <div class="form-title">Dados da sua marca</div>
-      <div class="form-subtitle">Quanto mais detalhes, melhor o resultado</div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nome da marca *</label>
-          <input type="text" id="marca" placeholder="Ex: Pet Mania" maxlength="50">
-        </div>
-        <div class="form-group">
-          <label>Nicho / Segmento *</label>
-          <input type="text" id="niche" placeholder="Ex: pet shop, moda, tech">
-        </div>
-        <div class="form-group">
-          <label>Estilo visual</label>
-          <select id="estilo">
-            <option value="minimalist">Minimalista</option>
-            <option value="luxury">Luxo / Premium</option>
-            <option value="modern">Moderno</option>
-            <option value="vintage">Vintage / Retrô</option>
-            <option value="playful">Divertido / Jovem</option>
-            <option value="tech">Tecnológico</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Idioma do logo</label>
-          <select id="language">
-            <option value="pt">Português</option>
-            <option value="en">Inglês</option>
-            <option value="es">Espanhol</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label>Cores da marca</label>
-          <div class="color-row">
-            <div class="color-input-wrap">
-              <input type="color" id="primaryColor" value="#4F8EF7">
-              <input type="text" id="primaryColorText" placeholder="Cor primária" value="Azul">
-            </div>
-            <div class="color-input-wrap">
-              <input type="color" id="secondaryColor" value="#7B5CF7">
-              <input type="text" id="secondaryColorText" placeholder="Cor secundária" value="Roxo">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="error-msg" id="errorMsg"></div>
-
-      <button class="btn-submit" id="btnSubmit" onclick="generateLogos()">
-        Gerar meus logos →
-      </button>
-    </div>
-
-    <div class="loading-state" id="loadingState">
+  <div class="upload-card" id="uploadCard">
+    <div class="loading-overlay" id="loadingOverlay">
       <div class="loading-ring"></div>
-      <div class="loading-text">Criando seus logos...</div>
-      <div class="loading-sub">Isso leva aproximadamente 30 segundos</div>
-      <div class="loading-steps">
-        <div class="step-item active" id="step1"><div class="step-dot"></div>Analisando sua marca</div>
-        <div class="step-item" id="step2"><div class="step-dot"></div>Gerando conceitos visuais</div>
-        <div class="step-item" id="step3"><div class="step-dot"></div>Refinando os designs</div>
-        <div class="step-item" id="step4"><div class="step-dot"></div>Removendo o fundo</div>
-        <div class="step-item" id="step5"><div class="step-dot"></div>Finalizando arquivos</div>
+      <div class="loading-text">Removendo o fundo...</div>
+      <div class="loading-sub">Aguarde alguns segundos</div>
+    </div>
+
+    <!-- DROP ZONE -->
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <div class="drop-icon">🖼️</div>
+      <div class="drop-title">Arraste sua imagem aqui</div>
+      <div class="drop-sub">ou clique para selecionar um arquivo</div>
+      <div class="drop-formats">
+        <span class="format-pill">PNG</span>
+        <span class="format-pill">JPG</span>
+        <span class="format-pill">WEBP</span>
+        <span class="format-pill">até 10MB</span>
+      </div>
+      <div><label class="btn-browse" for="fileInput">Selecionar arquivo</label></div>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/jpg">
+
+    <!-- PREVIEW -->
+    <div class="preview-area" id="previewArea">
+      <div class="preview-card">
+        <div class="preview-label">Original</div>
+        <div class="preview-img-wrap">
+          <img id="originalImg" src="" alt="Original">
+        </div>
+      </div>
+      <div class="preview-card">
+        <div class="preview-label">Sem fundo</div>
+        <div class="preview-img-wrap checker" id="resultWrap">
+          <img id="resultImg" src="" alt="Resultado" style="display:none">
+          <span id="resultPlaceholder" style="font-size:12px;color:var(--muted)">Aguardando processamento...</span>
+        </div>
       </div>
     </div>
 
-    <div class="result-state" id="resultState">
-      <div class="result-header">
-        <div class="result-icon">✓</div>
-        <div class="result-title">Seus logos estão prontos!</div>
-        <div class="result-sub">4 conceitos únicos com fundo transparente</div>
-      </div>
-      <div class="logos-grid" id="logosGrid"></div>
-      <button class="btn-download-all" onclick="downloadAll()">⬇ Baixar todos os logos</button>
-      <button class="btn-new" onclick="resetForm()">Gerar novos logos →</button>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-badge" id="successBadge">✓ Fundo removido com sucesso!</div>
+
+    <!-- ACTIONS -->
+    <div class="actions" id="actions">
+      <button class="btn-remove" id="btnRemove" onclick="removeBg()">
+        Remover fundo →
+      </button>
+      <button class="btn-download active" id="btnDownload" style="display:none" onclick="downloadResult()">
+        ⬇ Baixar PNG
+      </button>
+      <button class="btn-reset" onclick="resetAll()">Limpar</button>
     </div>
 
   </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Rápido</div>
+      <div class="feature-desc">Resultado em poucos segundos usando IA de última geração</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">Preciso</div>
+      <div class="feature-desc">BiRefNet — modelo estado da arte para segmentação de imagens</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💾</div>
+      <div class="feature-title">PNG transparente</div>
+      <div class="feature-desc">Baixe em alta resolução com fundo 100% transparente</div>
+    </div>
+  </div>
+
 </div>
 
 <footer>
-  LogoIA · Geração de logos com IA · Powered by Gemini & BiRefNet
+  RemoveBG · Remoção de fundo com IA · Powered by BiRefNet
 </footer>
 
 <script>
-// ⚠️ URL direta do webhook — CORS já configurado no n8n
-const WEBHOOK_URL = 'https://dropsmart.app.n8n.cloud/webhook/logoapi';
+// ⚠️ CONFIGURE AQUI A URL DO SEU SERVIDOR HUGGING FACE
+const HF_URL = 'https://drops123456-rembg-api.hf.space/remove';
 
-let generatedLogos = [];
+let originalFileName = 'imagem';
+let resultBase64 = null;
 
-document.getElementById('primaryColor').addEventListener('input', function() {
-  document.getElementById('primaryColorText').value = this.value;
+// Drag and drop
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
 });
-document.getElementById('secondaryColor').addEventListener('input', function() {
-  document.getElementById('secondaryColorText').value = this.value;
+
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('drag-over');
 });
+
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) handleFile(file);
+});
+
+function handleFile(file) {
+  if (!file.type.startsWith('image/')) {
+    showError('Por favor, selecione uma imagem válida (PNG, JPG ou WEBP).');
+    return;
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    showError('Arquivo muito grande. Máximo 10MB.');
+    return;
+  }
+
+  hideError();
+  hideSuccess();
+  resultBase64 = null;
+
+  originalFileName = file.name.replace(/\.[^/.]+$/, '');
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('originalImg').src = e.target.result;
+    document.getElementById('resultImg').style.display = 'none';
+    document.getElementById('resultImg').src = '';
+    document.getElementById('resultPlaceholder').style.display = 'block';
+    document.getElementById('btnDownload').style.display = 'none';
+    document.getElementById('previewArea').classList.add('active');
+    document.getElementById('actions').classList.add('active');
+    document.getElementById('btnRemove').disabled = false;
+    hideSuccess();
+  };
+  reader.readAsDataURL(file);
+}
+
+async function removeBg() {
+  const imgSrc = document.getElementById('originalImg').src;
+  if (!imgSrc) return;
+
+  hideError();
+  hideSuccess();
+  document.getElementById('loadingOverlay').classList.add('active');
+  document.getElementById('btnRemove').disabled = true;
+  document.getElementById('btnDownload').style.display = 'none';
+
+  try {
+    // Converte imagem para base64 puro (sem o prefixo data:...)
+    const base64 = imgSrc.split(',')[1];
+
+    const response = await fetch(HF_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64 })
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Erro ${response.status}: ${text}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.image) throw new Error('Resposta inválida do servidor.');
+
+    resultBase64 = data.image;
+
+    const resultSrc = `data:image/png;base64,${data.image}`;
+    document.getElementById('resultImg').src = resultSrc;
+    document.getElementById('resultImg').style.display = 'block';
+    document.getElementById('resultPlaceholder').style.display = 'none';
+    document.getElementById('btnDownload').style.display = 'block';
+    showSuccess();
+
+  } catch (err) {
+    showError(err.message || 'Erro ao processar imagem. Tente novamente.');
+    console.error(err);
+  } finally {
+    document.getElementById('loadingOverlay').classList.remove('active');
+    document.getElementById('btnRemove').disabled = false;
+  }
+}
+
+function downloadResult() {
+  if (!resultBase64) return;
+  const a = document.createElement('a');
+  a.href = `data:image/png;base64,${resultBase64}`;
+  a.download = `${originalFileName}-sem-fundo.png`;
+  a.click();
+}
+
+function resetAll() {
+  document.getElementById('fileInput').value = '';
+  document.getElementById('originalImg').src = '';
+  document.getElementById('resultImg').src = '';
+  document.getElementById('resultImg').style.display = 'none';
+  document.getElementById('resultPlaceholder').style.display = 'block';
+  document.getElementById('previewArea').classList.remove('active');
+  document.getElementById('actions').classList.remove('active');
+  document.getElementById('btnDownload').style.display = 'none';
+  resultBase64 = null;
+  hideError();
+  hideSuccess();
+}
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
@@ -516,116 +617,12 @@ function hideError() {
   document.getElementById('errorMsg').classList.remove('active');
 }
 
-function setState(state) {
-  document.getElementById('formState').style.display = state === 'form' ? 'block' : 'none';
-  document.getElementById('loadingState').classList.toggle('active', state === 'loading');
-  document.getElementById('resultState').classList.toggle('active', state === 'result');
+function showSuccess() {
+  document.getElementById('successBadge').classList.add('active');
 }
 
-function animateSteps() {
-  const steps = ['step1','step2','step3','step4','step5'];
-  const delays = [0, 5000, 10000, 18000, 26000];
-  steps.forEach((id, i) => {
-    setTimeout(() => {
-      if (i > 0) document.getElementById(steps[i-1]).className = 'step-item done';
-      const el = document.getElementById(id);
-      if (el) el.className = 'step-item active';
-    }, delays[i]);
-  });
-}
-
-async function generateLogos() {
-  hideError();
-
-  const marca = document.getElementById('marca').value.trim();
-  const niche = document.getElementById('niche').value.trim();
-
-  if (!marca) { showError('Por favor, informe o nome da marca.'); return; }
-  if (!niche) { showError('Por favor, informe o nicho ou segmento.'); return; }
-
-  const payload = {
-    Marca: marca,
-    Niche: niche,
-    Estilo: document.getElementById('estilo').value,
-    Language: document.getElementById('language').value,
-    'Primary color': document.getElementById('primaryColorText').value || document.getElementById('primaryColor').value,
-    'Secondary color': document.getElementById('secondaryColorText').value || document.getElementById('secondaryColor').value
-  };
-
-  setState('loading');
-  animateSteps();
-
-  try {
-    const response = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ body: payload })
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Erro ${response.status}: ${text}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.logos || data.logos.length === 0) {
-      throw new Error('Nenhum logo retornado. Verifique o fluxo n8n.');
-    }
-
-    generatedLogos = data.logos;
-    renderLogos(generatedLogos, marca);
-    setState('result');
-
-  } catch (err) {
-    setState('form');
-    showError(err.message || 'Ocorreu um erro. Verifique o console para detalhes.');
-    console.error('Erro completo:', err);
-  }
-}
-
-function renderLogos(logos, marca) {
-  const grid = document.getElementById('logosGrid');
-  const names = ['Premium Brand Mark', 'Iconic Symbol Mark', 'Modern Typographic', 'Friendly Emblem'];
-  grid.innerHTML = logos.map((logo, i) => `
-    <div class="logo-card">
-      <div class="logo-preview">
-        <img src="data:${logo.mimeType};base64,${logo.data}" alt="Logo ${i+1}">
-      </div>
-      <div class="logo-card-footer">
-        <span class="logo-name">${names[i] || 'Logo ' + (i+1)}</span>
-        <a class="btn-download" onclick="downloadLogo(${i}, '${marca.replace(/'/g,"\\'")}')">⬇ Baixar</a>
-      </div>
-    </div>
-  `).join('');
-}
-
-function downloadLogo(index, marca) {
-  const logo = generatedLogos[index];
-  if (!logo) return;
-  const names = ['premium-brand-mark','iconic-symbol','typographic','friendly-emblem'];
-  const a = document.createElement('a');
-  a.href = `data:${logo.mimeType};base64,${logo.data}`;
-  a.download = `${marca.toLowerCase().replace(/\s+/g,'-')}-${names[index] || index+1}.png`;
-  a.click();
-}
-
-function downloadAll() {
-  generatedLogos.forEach((_, i) => {
-    setTimeout(() => downloadLogo(i, document.getElementById('marca').value), i * 300);
-  });
-}
-
-function resetForm() {
-  generatedLogos = [];
-  document.getElementById('logosGrid').innerHTML = '';
-  ['step1','step2','step3','step4','step5'].forEach((id, i) => {
-    document.getElementById(id).className = i === 0 ? 'step-item active' : 'step-item';
-  });
-  setState('form');
+function hideSuccess() {
+  document.getElementById('successBadge').classList.remove('active');
 }
 </script>
 </body>
