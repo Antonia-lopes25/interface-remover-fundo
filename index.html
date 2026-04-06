@@ -378,7 +378,7 @@ async function processImage() {
 
   const body = { image: b64 };
   if (opts.vectorize)  body.force_vector = null;  // auto
-  if (opts.upscale)    body.upscale = true;
+  if (opts.upscale)    body.upscale = false;
   if (bgColorEnabled)  body.bg_color = document.getElementById('bgColorPicker').value;
 
   try {
