@@ -30,7 +30,6 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
 
 .main { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:40px 20px 80px; }
 
-/* ÁREA DE UPLOAD */
 .upload-zone {
   border:2px dashed rgba(79,142,247,0.25); border-radius:16px; padding:48px 24px;
   text-align:center; cursor:pointer; transition:border-color 0.2s, background 0.2s;
@@ -44,7 +43,6 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
 .btn-browse { display:inline-block; margin-top:16px; background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.2); color:var(--accent); padding:10px 24px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s; }
 .btn-browse:hover { background:rgba(79,142,247,0.2); }
 
-/* OPÇÕES */
 .options-bar {
   display:flex; gap:12px; flex-wrap:wrap; align-items:center;
   background:var(--surface); border:1px solid var(--border); border-radius:14px;
@@ -65,7 +63,6 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
 .btn-remove-bg-opt { background:none; border:1px solid rgba(79,142,247,0.3); color:var(--accent); padding:4px 12px; border-radius:6px; font-size:11px; cursor:pointer; transition:background 0.2s; }
 .btn-remove-bg-opt:hover { background:rgba(79,142,247,0.1); }
 
-/* ÁREA DE TRABALHO */
 .workspace { display:none; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
 .workspace.active { display:grid; }
 
@@ -85,7 +82,6 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
 .canvas-wrap img { max-width:100%; max-height:100%; object-fit:contain; border-radius:4px; }
 canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 
-/* BRUSH TOOLBAR */
 .brush-toolbar {
   display:none; padding:12px 16px; border-top:1px solid var(--border);
   gap:10px; align-items:center; flex-wrap:wrap;
@@ -99,7 +95,6 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 .brush-size-wrap input { width:80px; accent-color:var(--accent); }
 .brush-size-label { font-size:11px; color:var(--muted); }
 
-/* CONFIDENCE */
 .confidence-bar {
   display:none; padding:10px 16px; border-top:1px solid var(--border);
   align-items:center; gap:10px;
@@ -110,7 +105,6 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 .conf-fill { height:4px; border-radius:2px; background:var(--success); transition:width 0.5s; }
 .conf-value { font-size:11px; color:var(--success); font-weight:600; white-space:nowrap; }
 
-/* AÇÕES */
 .actions { display:none; gap:10px; flex-wrap:wrap; }
 .actions.active { display:flex; }
 
@@ -130,7 +124,6 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 }
 .btn-secondary:hover { border-color:rgba(79,142,247,0.3); }
 
-/* BATCH */
 .batch-section {
   background:var(--surface); border:1px solid var(--border); border-radius:14px;
   padding:20px; margin-top:20px; display:none;
@@ -148,7 +141,6 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 .batch-name { font-size:10px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70px; }
 .batch-dl { background:none; border:none; color:var(--accent); font-size:11px; cursor:pointer; }
 
-/* LOADING */
 .loading-overlay {
   display:none; position:fixed; inset:0; background:rgba(8,12,20,0.8);
   align-items:center; justify-content:center; flex-direction:column;
@@ -160,7 +152,6 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 .loading-text { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; }
 .loading-sub { font-size:13px; color:var(--muted); }
 
-/* ERROR */
 .error-msg { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#F87171; padding:12px 16px; border-radius:10px; font-size:13px; margin-top:12px; display:none; }
 .error-msg.active { display:block; }
 .success-msg { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); color:var(--success); padding:10px 16px; border-radius:10px; font-size:13px; margin-top:12px; display:none; align-items:center; gap:8px; }
@@ -180,12 +171,11 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 
 <nav>
   <div class="logo-brand">RemoveBG Pro</div>
-  <div class="nav-badge">✦ BiRefNet + Vectorização</div>
+  <div class="nav-badge">✦ BiRefNet</div>
 </nav>
 
 <div class="main">
 
-  <!-- UPLOAD -->
   <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
     <div class="upload-icon">🖼️</div>
     <div class="upload-title">Arraste sua imagem aqui</div>
@@ -194,15 +184,7 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
     <input type="file" id="fileInput" accept="image/*" multiple>
   </div>
 
-  <!-- OPÇÕES -->
   <div class="options-bar">
-    <div class="opt-group">
-      <div class="opt-label">Vectorização</div>
-      <div class="toggle-wrap" onclick="toggleOpt('vectorize')">
-        <div class="toggle" id="toggle-vectorize"></div>
-        <span class="toggle-label">Auto (detecta flat design)</span>
-      </div>
-    </div>
     <div class="opt-group">
       <div class="opt-label">Upscaling 2×</div>
       <div class="toggle-wrap" onclick="toggleOpt('upscale')">
@@ -232,7 +214,6 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
   <div class="error-msg" id="errorMsg"></div>
   <div class="success-msg" id="successMsg"><span>✓</span><span id="successText"></span></div>
 
-  <!-- WORKSPACE -->
   <div class="workspace" id="workspace">
     <div class="panel">
       <div class="panel-header">
@@ -272,15 +253,12 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
     </div>
   </div>
 
-  <!-- AÇÕES -->
   <div class="actions" id="actions">
     <button class="btn-primary" id="btnProcess" onclick="processImage()">Remover fundo →</button>
     <button class="btn-secondary" onclick="downloadResult()">⬇ Baixar PNG</button>
-    <button class="btn-secondary" id="btnDownloadSVG" style="display:none" onclick="downloadSVG()">⬇ Baixar SVG</button>
     <button class="btn-secondary" onclick="resetAll()">Limpar</button>
   </div>
 
-  <!-- BATCH -->
   <div class="batch-section" id="batchSection">
     <div class="batch-title">Processamento em lote</div>
     <div class="batch-grid" id="batchGrid"></div>
@@ -292,7 +270,6 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 
 </div>
 
-<!-- LOADING -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-ring"></div>
   <div class="loading-text" id="loadingText">Removendo fundo...</div>
@@ -302,18 +279,17 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 <script>
 const HF_URL = 'https://drops123456-rembg-api.hf.space';
 
-let currentFile       = null;
-let currentResult     = null;
-let currentResultB64  = null;
-let currentSVGB64     = null;
-let batchFiles        = [];
-let batchResults      = [];
-let brushMode         = 'erase';
-let isPainting        = false;
-let brushCanvas       = null;
-let brushCtx          = null;
-let opts = { vectorize: false, upscale: false, brush: false };
-let bgColorEnabled    = false;
+let currentFile      = null;
+let currentResultB64 = null;
+let currentResult    = null;
+let batchFiles       = [];
+let batchResults     = [];
+let brushMode        = 'erase';
+let isPainting       = false;
+let brushCanvas      = null;
+let brushCtx         = null;
+let opts = { upscale: false, brush: false };
+let bgColorEnabled   = false;
 
 // ── DRAG & DROP ──────────────────────────
 const dropZone = document.getElementById('dropZone');
@@ -348,11 +324,10 @@ function loadPreview(file) {
     document.getElementById('resultPlaceholder').style.display = 'block';
     document.getElementById('workspace').classList.add('active');
     document.getElementById('actions').classList.add('active');
-    document.getElementById('btnDownloadSVG').style.display = 'none';
     document.getElementById('confidenceBar').classList.remove('active');
     document.getElementById('brushToolbar').classList.remove('active');
     if (brushCanvas) brushCanvas.style.display = 'none';
-    currentResult = null; currentResultB64 = null; currentSVGB64 = null;
+    currentResult = null; currentResultB64 = null;
     hideMessages();
   };
   reader.readAsDataURL(file);
@@ -361,8 +336,7 @@ function loadPreview(file) {
 // ── OPÇÕES ───────────────────────────────
 function toggleOpt(key) {
   opts[key] = !opts[key];
-  const el = document.getElementById('toggle-' + key);
-  el.classList.toggle('on', opts[key]);
+  document.getElementById('toggle-' + key).classList.toggle('on', opts[key]);
 }
 
 function clearBgColor() { bgColorEnabled = false; }
@@ -375,11 +349,9 @@ async function processImage() {
   hideMessages();
 
   const b64 = await fileToBase64(currentFile);
-
   const body = { image: b64 };
-  if (opts.vectorize)  body.force_vector = null;  // auto
-  if (opts.upscale)    body.upscale = false;
-  if (bgColorEnabled)  body.bg_color = document.getElementById('bgColorPicker').value;
+  if (opts.upscale)   body.upscale   = true;
+  if (bgColorEnabled) body.bg_color  = document.getElementById('bgColorPicker').value;
 
   try {
     const res  = await fetch(HF_URL + '/remove', {
@@ -391,15 +363,13 @@ async function processImage() {
     hideLoading();
 
     currentResultB64 = data.image;
-    currentSVGB64    = data.svg || null;
-    currentResult    = `data:${data.mimeType};base64,${data.image}`;
+    currentResult    = `data:image/png;base64,${data.image}`;
 
     const img = document.getElementById('resultImg');
     img.src = currentResult;
     img.style.display = 'block';
     document.getElementById('resultPlaceholder').style.display = 'none';
 
-    // Confidence
     if (data.confidence !== undefined) {
       const pct = Math.round(data.confidence * 100);
       document.getElementById('confFill').style.width = pct + '%';
@@ -407,18 +377,13 @@ async function processImage() {
       document.getElementById('confidenceBar').classList.add('active');
     }
 
-    // Complexity badge
     const badge = document.getElementById('complexityBadge');
-    badge.textContent = data.method === 'vectorized' ? 'Vetorizado' : data.complexity === 'flat' ? 'Flat' : 'Complexo';
-    badge.className = 'panel-badge ' + (data.complexity === 'flat' ? 'badge-flat' : 'badge-complex');
+    badge.textContent = data.complexity === 'flat' ? 'Flat' : 'Complexo';
+    badge.className   = 'panel-badge ' + (data.complexity === 'flat' ? 'badge-flat' : 'badge-complex');
 
-    // SVG button
-    if (currentSVGB64) document.getElementById('btnDownloadSVG').style.display = 'block';
-
-    // Brush
     if (opts.brush) setupBrushCanvas();
 
-    showSuccess(data.method === 'vectorized' ? 'Fundo removido e vetorizado com sucesso!' : 'Fundo removido com sucesso!');
+    showSuccess('Fundo removido com sucesso!');
 
   } catch(e) {
     hideLoading();
@@ -426,17 +391,54 @@ async function processImage() {
   }
 }
 
+// ── DOWNLOAD CORRETO (Blob binário) ───────
+function base64ToBlob(b64, mimeType) {
+  const byteChars   = atob(b64);
+  const byteNumbers = new Array(byteChars.length);
+  for (let i = 0; i < byteChars.length; i++) {
+    byteNumbers[i] = byteChars.charCodeAt(i);
+  }
+  return new Blob([new Uint8Array(byteNumbers)], { type: mimeType });
+}
+
+function downloadResult() {
+  if (!currentResultB64) return;
+  const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
+  const blob = base64ToBlob(currentResultB64, 'image/png');
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = name + '-sem-fundo.png';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadBatchItem(i) {
+  if (!batchResults[i]) return;
+  const name = batchFiles[i].name.replace(/\.[^.]+$/, '');
+  const blob = base64ToBlob(batchResults[i], 'image/png');
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = name + '-sem-fundo.png';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadAllBatch() {
+  batchResults.forEach((r, i) => {
+    if (r) setTimeout(() => downloadBatchItem(i), i * 300);
+  });
+}
+
 // ── BRUSH ─────────────────────────────────
 function setupBrushCanvas() {
-  const wrap  = document.getElementById('resultWrap');
   const img   = document.getElementById('resultImg');
   brushCanvas = document.getElementById('brushCanvas');
   brushCtx    = brushCanvas.getContext('2d');
-
   brushCanvas.width  = img.naturalWidth  || img.clientWidth;
   brushCanvas.height = img.naturalHeight || img.clientHeight;
   brushCanvas.style.display = 'block';
-
   document.getElementById('brushToolbar').classList.add('active');
 
   brushCanvas.addEventListener('mousedown', e => { isPainting = true; paint(e); });
@@ -450,13 +452,10 @@ function setupBrushCanvas() {
 }
 
 function getBrushPos(e) {
-  const rect = brushCanvas.getBoundingClientRect();
+  const rect   = brushCanvas.getBoundingClientRect();
   const scaleX = brushCanvas.width  / rect.width;
   const scaleY = brushCanvas.height / rect.height;
-  return {
-    x: (e.clientX - rect.left) * scaleX,
-    y: (e.clientY - rect.top)  * scaleY
-  };
+  return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
 }
 
 function paint(e) {
@@ -477,9 +476,7 @@ function setBrushMode(mode) {
 async function applyBrush() {
   if (!currentResultB64 || !brushCanvas) return;
   showLoading('Aplicando refinamento...', '');
-
   const maskB64 = brushCanvas.toDataURL('image/png').split(',')[1];
-
   try {
     const res  = await fetch(HF_URL + '/refine', {
       method: 'POST',
@@ -488,11 +485,9 @@ async function applyBrush() {
     });
     const data = await res.json();
     hideLoading();
-
     currentResultB64 = data.image;
     currentResult    = `data:image/png;base64,${data.image}`;
     document.getElementById('resultImg').src = currentResult;
-
     resetBrush();
     showSuccess('Refinamento aplicado!');
   } catch(e) {
@@ -517,7 +512,6 @@ function setupBatch() {
   batchFiles.forEach((file, i) => {
     const item = document.createElement('div');
     item.className = 'batch-item';
-    item.id = 'batch-item-' + i;
     item.innerHTML = `
       <div class="batch-thumb" id="batch-thumb-${i}">
         <span style="font-size:10px;color:var(--muted)">carregando...</span>
@@ -530,8 +524,8 @@ function setupBatch() {
 
     const reader = new FileReader();
     reader.onload = e => {
-      const thumb = document.getElementById('batch-thumb-' + i);
-      thumb.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      document.getElementById('batch-thumb-' + i).innerHTML =
+        `<img src="${e.target.result}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
     };
     reader.readAsDataURL(file);
   });
@@ -540,13 +534,10 @@ function setupBatch() {
 async function processBatch() {
   showLoading('Processando lote...', `0 / ${batchFiles.length} imagens`);
   batchResults = new Array(batchFiles.length).fill(null);
-
-  const b64s = await Promise.all(batchFiles.map(fileToBase64));
-
-  const body = { images: b64s };
+  const b64s   = await Promise.all(batchFiles.map(fileToBase64));
+  const body   = { images: b64s };
   if (bgColorEnabled) body.bg_color = document.getElementById('bgColorPicker').value;
   if (opts.upscale)   body.upscale  = true;
-
   try {
     const res  = await fetch(HF_URL + '/remove-batch', {
       method: 'POST',
@@ -555,15 +546,15 @@ async function processBatch() {
     });
     const data = await res.json();
     hideLoading();
-
     data.results.forEach(r => {
       if (!r.success) return;
       batchResults[r.index] = r.image;
-      const thumb = document.getElementById('batch-thumb-' + r.index);
-      thumb.innerHTML = `<img src="data:image/png;base64,${r.image}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      const blob = base64ToBlob(r.image, 'image/png');
+      const url  = URL.createObjectURL(blob);
+      document.getElementById('batch-thumb-' + r.index).innerHTML =
+        `<img src="${url}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
       document.getElementById('batch-dl-' + r.index).style.display = 'block';
     });
-
     showSuccess(`${data.results.filter(r=>r.success).length} imagens processadas!`);
   } catch(e) {
     hideLoading();
@@ -571,43 +562,7 @@ async function processBatch() {
   }
 }
 
-function downloadBatchItem(i) {
-  if (!batchResults[i]) return;
-  const a = document.createElement('a');
-  a.href     = `data:image/png;base64,${batchResults[i]}`;
-  a.download = batchFiles[i].name.replace(/\.[^.]+$/, '') + '-sem-fundo.png';
-  a.click();
-}
-
-function downloadAllBatch() {
-  batchResults.forEach((r, i) => { if(r) setTimeout(() => downloadBatchItem(i), i * 300); });
-}
-
-function hideBatch() {
-  document.getElementById('batchSection').classList.remove('active');
-}
-
-// ── DOWNLOAD ──────────────────────────────
-function downloadResult() {
-    if (!currentResultB64) return;
-    const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
-    const a = document.createElement('a');
-
-    // Detecta se é SVG ou PNG
-    const isSvg = currentResult && currentResult.includes('image/svg');
-    a.href     = currentResult;
-    a.download = name + '-sem-fundo.' + (isSvg ? 'svg' : 'png');
-    a.click();
-}
-
-function downloadSVG() {
-  if (!currentSVGB64) return;
-  const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
-  const a    = document.createElement('a');
-  a.href     = `data:image/svg+xml;base64,${currentSVGB64}`;
-  a.download = name + '-sem-fundo.svg';
-  a.click();
-}
+function hideBatch() { document.getElementById('batchSection').classList.remove('active'); }
 
 // ── UTILITÁRIOS ───────────────────────────
 function fileToBase64(file) {
@@ -642,7 +597,7 @@ function hideMessages() {
 }
 
 function resetAll() {
-  currentFile = currentResult = currentResultB64 = currentSVGB64 = null;
+  currentFile = currentResult = currentResultB64 = null;
   batchFiles = []; batchResults = [];
   fileInput.value = '';
   document.getElementById('originalImg').src = '';
@@ -652,7 +607,6 @@ function resetAll() {
   document.getElementById('workspace').classList.remove('active');
   document.getElementById('actions').classList.remove('active');
   document.getElementById('batchSection').classList.remove('active');
-  document.getElementById('btnDownloadSVG').style.display = 'none';
   document.getElementById('confidenceBar').classList.remove('active');
   document.getElementById('brushToolbar').classList.remove('active');
   if (brushCanvas) { brushCanvas.style.display = 'none'; resetBrush(); }
