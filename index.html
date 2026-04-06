@@ -3,626 +3,657 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RemovePro — Remova o fundo da sua imagem</title>
+<title>RemoveBG Pro — Remoção de fundo com IA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #080C14;
-  --surface: #0E1420;
-  --surface2: #141B2B;
-  --border: rgba(255,255,255,0.07);
-  --accent: #4F8EF7;
-  --accent2: #7B5CF7;
-  --text: #F0F4FF;
-  --muted: #5A6480;
-  --success: #22C55E;
+  --bg: #080C14; --surface: #0E1420; --surface2: #141B2B;
+  --border: rgba(255,255,255,0.07); --accent: #4F8EF7; --accent2: #7B5CF7;
+  --text: #F0F4FF; --muted: #5A6480; --success: #22C55E; --danger: #EF4444;
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
 body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+  content:''; position:fixed; inset:0;
+  background-image: linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none; z-index: 0;
+  background-size:48px 48px; pointer-events:none; z-index:0;
 }
+.glow { position:fixed; width:500px; height:500px; border-radius:50%; filter:blur(120px); pointer-events:none; z-index:0; }
+.glow-1 { background:rgba(79,142,247,0.10); top:-150px; right:-100px; }
+.glow-2 { background:rgba(123,92,247,0.07); bottom:-100px; left:-100px; }
 
-.glow {
-  position: fixed; width: 500px; height: 500px;
-  border-radius: 50%; filter: blur(120px);
-  pointer-events: none; z-index: 0;
+nav { position:relative; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:20px 40px; border-bottom:1px solid var(--border); }
+.logo-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.nav-badge { background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.2); color:var(--accent); padding:5px 14px; border-radius:20px; font-size:12px; }
+
+.main { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:40px 20px 80px; }
+
+/* ÁREA DE UPLOAD */
+.upload-zone {
+  border:2px dashed rgba(79,142,247,0.25); border-radius:16px; padding:48px 24px;
+  text-align:center; cursor:pointer; transition:border-color 0.2s, background 0.2s;
+  background:var(--surface); margin-bottom:20px;
 }
-.glow-1 { background: rgba(79,142,247,0.10); top: -150px; right: -100px; }
-.glow-2 { background: rgba(123,92,247,0.07); bottom: -100px; left: -100px; }
+.upload-zone:hover, .upload-zone.drag-over { border-color:rgba(79,142,247,0.6); background:rgba(79,142,247,0.04); }
+.upload-icon { font-size:36px; margin-bottom:12px; }
+.upload-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:6px; }
+.upload-sub { font-size:13px; color:var(--muted); }
+#fileInput { display:none; }
+.btn-browse { display:inline-block; margin-top:16px; background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.2); color:var(--accent); padding:10px 24px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s; }
+.btn-browse:hover { background:rgba(79,142,247,0.2); }
 
-nav {
-  position: relative; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 40px;
-  border-bottom: 1px solid var(--border);
+/* OPÇÕES */
+.options-bar {
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding:16px 20px; margin-bottom:20px;
 }
+.opt-group { display:flex; flex-direction:column; gap:4px; }
+.opt-label { font-size:10px; font-weight:600; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.opt-row { display:flex; align-items:center; gap:8px; }
+.toggle-wrap { display:flex; align-items:center; gap:8px; cursor:pointer; }
+.toggle { width:36px; height:20px; background:var(--border); border-radius:10px; position:relative; transition:background 0.2s; cursor:pointer; }
+.toggle.on { background:var(--accent); }
+.toggle::after { content:''; position:absolute; top:3px; left:3px; width:14px; height:14px; background:#fff; border-radius:50%; transition:transform 0.2s; }
+.toggle.on::after { transform:translateX(16px); }
+.toggle-label { font-size:12px; color:var(--muted); }
+.color-pick-wrap { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; }
+.color-pick-wrap input[type="color"] { width:24px; height:24px; border:none; border-radius:4px; padding:0; cursor:pointer; background:none; }
+.color-pick-wrap span { font-size:12px; color:var(--muted); }
+.btn-remove-bg-opt { background:none; border:1px solid rgba(79,142,247,0.3); color:var(--accent); padding:4px 12px; border-radius:6px; font-size:11px; cursor:pointer; transition:background 0.2s; }
+.btn-remove-bg-opt:hover { background:rgba(79,142,247,0.1); }
 
-.logo-brand {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800; font-size: 20px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* ÁREA DE TRABALHO */
+.workspace { display:none; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+.workspace.active { display:grid; }
+
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.panel-header { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.panel-title { font-size:11px; font-weight:600; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.panel-badge { font-size:10px; padding:2px 8px; border-radius:20px; }
+.badge-flat { background:rgba(34,197,94,0.1); color:var(--success); }
+.badge-complex { background:rgba(79,142,247,0.1); color:var(--accent); }
+
+.canvas-wrap {
+  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  padding:16px; position:relative; overflow:hidden;
+  background:repeating-conic-gradient(#1a1f2e 0% 25%, #141824 0% 50%) 0 0/20px 20px;
 }
+.canvas-wrap.original { background:var(--surface2); }
+.canvas-wrap img { max-width:100%; max-height:100%; object-fit:contain; border-radius:4px; }
+canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
 
-.nav-badge {
-  background: rgba(79,142,247,0.1);
-  border: 1px solid rgba(79,142,247,0.2);
-  color: var(--accent);
-  padding: 5px 14px; border-radius: 20px;
-  font-size: 12px; font-weight: 500;
+/* BRUSH TOOLBAR */
+.brush-toolbar {
+  display:none; padding:12px 16px; border-top:1px solid var(--border);
+  gap:10px; align-items:center; flex-wrap:wrap;
 }
+.brush-toolbar.active { display:flex; }
+.brush-btn { background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:6px 14px; border-radius:8px; font-size:12px; cursor:pointer; transition:all 0.2s; }
+.brush-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(79,142,247,0.1); }
+.brush-btn.danger { border-color:rgba(239,68,68,0.3); color:var(--danger); }
+.brush-btn.danger:hover { background:rgba(239,68,68,0.1); }
+.brush-size-wrap { display:flex; align-items:center; gap:6px; }
+.brush-size-wrap input { width:80px; accent-color:var(--accent); }
+.brush-size-label { font-size:11px; color:var(--muted); }
 
-.hero {
-  position: relative; z-index: 1;
-  text-align: center;
-  padding: 60px 40px 40px;
-  max-width: 700px; margin: 0 auto;
+/* CONFIDENCE */
+.confidence-bar {
+  display:none; padding:10px 16px; border-top:1px solid var(--border);
+  align-items:center; gap:10px;
 }
+.confidence-bar.active { display:flex; }
+.conf-label { font-size:11px; color:var(--muted); white-space:nowrap; }
+.conf-track { flex:1; height:4px; background:var(--border); border-radius:2px; }
+.conf-fill { height:4px; border-radius:2px; background:var(--success); transition:width 0.5s; }
+.conf-value { font-size:11px; color:var(--success); font-weight:600; white-space:nowrap; }
 
-.hero-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(79,142,247,0.08);
-  border: 1px solid rgba(79,142,247,0.15);
-  color: var(--accent);
-  padding: 6px 16px; border-radius: 20px;
-  font-size: 12px; font-weight: 500;
-  margin-bottom: 24px; letter-spacing: 0.5px;
+/* AÇÕES */
+.actions { display:none; gap:10px; flex-wrap:wrap; }
+.actions.active { display:flex; }
+
+.btn-primary {
+  flex:1; padding:14px; background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none; border-radius:12px; color:#fff; font-family:'Syne',sans-serif;
+  font-size:15px; font-weight:700; cursor:pointer; transition:opacity 0.2s, transform 0.2s;
+  min-width:160px;
 }
+.btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+.btn-primary:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
-.hero-tag::before {
-  content: '';
-  width: 6px; height: 6px;
-  background: var(--accent); border-radius: 50%;
-  animation: pulse 2s infinite;
+.btn-secondary {
+  padding:14px 20px; background:var(--surface2); border:1px solid var(--border);
+  border-radius:12px; color:var(--text); font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:500; cursor:pointer; transition:border-color 0.2s;
 }
+.btn-secondary:hover { border-color:rgba(79,142,247,0.3); }
 
-@keyframes pulse {
-  0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:.5; transform:scale(.8); }
+/* BATCH */
+.batch-section {
+  background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding:20px; margin-top:20px; display:none;
 }
-
-h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(30px, 5vw, 52px);
-  font-weight: 800; line-height: 1.1;
-  margin-bottom: 16px; letter-spacing: -1px;
+.batch-section.active { display:block; }
+.batch-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:12px; }
+.batch-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px; }
+.batch-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.batch-thumb {
+  aspect-ratio:1; background:repeating-conic-gradient(#1a1f2e 0% 25%, #141824 0% 50%) 0 0/16px 16px;
+  display:flex; align-items:center; justify-content:center; padding:8px;
 }
+.batch-thumb img { max-width:100%; max-height:100%; object-fit:contain; }
+.batch-foot { padding:6px 8px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); }
+.batch-name { font-size:10px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70px; }
+.batch-dl { background:none; border:none; color:var(--accent); font-size:11px; cursor:pointer; }
 
-h1 span {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.hero-sub {
-  font-size: 16px; color: var(--muted);
-  font-weight: 300; line-height: 1.6;
-  max-width: 480px; margin: 0 auto 40px;
-}
-
-.main {
-  position: relative; z-index: 1;
-  max-width: 860px; margin: 0 auto;
-  padding: 0 20px 80px;
-}
-
-/* UPLOAD AREA */
-.upload-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px; padding: 40px;
-  position: relative; overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.upload-card::before {
-  content: '';
-  position: absolute; top:0; left:0; right:0; height:1px;
-  background: linear-gradient(90deg, transparent, rgba(79,142,247,0.4), transparent);
-}
-
-.drop-zone {
-  border: 2px dashed rgba(79,142,247,0.25);
-  border-radius: 14px;
-  padding: 48px 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  position: relative;
-}
-
-.drop-zone:hover, .drop-zone.drag-over {
-  border-color: rgba(79,142,247,0.6);
-  background: rgba(79,142,247,0.04);
-}
-
-.drop-icon {
-  width: 56px; height: 56px;
-  background: rgba(79,142,247,0.1);
-  border: 1px solid rgba(79,142,247,0.2);
-  border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
-  font-size: 24px;
-}
-
-.drop-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px; font-weight: 600; margin-bottom: 6px;
-}
-
-.drop-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
-
-.drop-formats {
-  display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
-}
-
-.format-pill {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  padding: 3px 10px; border-radius: 20px;
-  font-size: 11px; color: var(--muted);
-}
-
-#fileInput { display: none; }
-
-.btn-browse {
-  background: rgba(79,142,247,0.1);
-  border: 1px solid rgba(79,142,247,0.2);
-  color: var(--accent);
-  padding: 10px 24px; border-radius: 10px;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: 'DM Sans', sans-serif;
-  transition: background 0.2s; margin-top: 16px;
-  display: inline-block;
-}
-
-.btn-browse:hover { background: rgba(79,142,247,0.2); }
-
-/* PREVIEW AREA */
-.preview-area {
-  display: none;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px; margin-top: 24px;
-}
-
-.preview-area.active { display: grid; }
-
-.preview-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 14px; overflow: hidden;
-}
-
-.preview-label {
-  padding: 12px 16px;
-  font-size: 11px; font-weight: 600;
-  color: var(--muted); letter-spacing: 1px;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
-
-.preview-img-wrap {
-  aspect-ratio: 1;
-  display: flex; align-items: center; justify-content: center;
-  padding: 16px;
-}
-
-.preview-img-wrap.checker {
-  background: repeating-conic-gradient(#1a1f2e 0% 25%, #141824 0% 50%) 0 0 / 20px 20px;
-}
-
-.preview-img-wrap img {
-  max-width: 100%; max-height: 100%;
-  object-fit: contain; border-radius: 4px;
-}
-
-/* LOADING OVERLAY */
+/* LOADING */
 .loading-overlay {
-  display: none;
-  position: absolute; inset: 0;
-  background: rgba(8,12,20,0.85);
-  border-radius: 20px;
-  align-items: center; justify-content: center;
-  flex-direction: column; gap: 16px;
-  z-index: 10;
+  display:none; position:fixed; inset:0; background:rgba(8,12,20,0.8);
+  align-items:center; justify-content:center; flex-direction:column;
+  gap:16px; z-index:100;
 }
-
-.loading-overlay.active { display: flex; }
-
-.loading-ring {
-  width: 48px; height: 48px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.loading-text {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px; font-weight: 600;
-}
-
-.loading-sub { font-size: 12px; color: var(--muted); }
-
-/* ACTIONS */
-.actions {
-  display: none; gap: 12px; margin-top: 20px;
-}
-
-.actions.active { display: flex; }
-
-.btn-remove {
-  flex: 1; padding: 14px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none; border-radius: 12px;
-  color: #fff; font-family: 'Syne', sans-serif;
-  font-size: 15px; font-weight: 700;
-  cursor: pointer; transition: opacity 0.2s, transform 0.2s;
-}
-
-.btn-remove:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-remove:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-.btn-download {
-  padding: 14px 24px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  color: var(--text); font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 600;
-  cursor: pointer; transition: border-color 0.2s;
-  display: none;
-}
-
-.btn-download:hover { border-color: rgba(79,142,247,0.4); }
-.btn-download.active { display: block; }
-
-.btn-reset {
-  padding: 14px 20px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  color: var(--muted); font-family: 'DM Sans', sans-serif;
-  font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: border-color 0.2s, color 0.2s;
-}
-
-.btn-reset:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+.loading-overlay.active { display:flex; }
+.loading-ring { width:56px; height:56px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-text { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; }
+.loading-sub { font-size:13px; color:var(--muted); }
 
 /* ERROR */
-.error-msg {
-  background: rgba(239,68,68,0.08);
-  border: 1px solid rgba(239,68,68,0.2);
-  color: #F87171; padding: 12px 16px;
-  border-radius: 10px; font-size: 13px;
-  margin-top: 12px; display: none;
-}
+.error-msg { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#F87171; padding:12px 16px; border-radius:10px; font-size:13px; margin-top:12px; display:none; }
+.error-msg.active { display:block; }
+.success-msg { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); color:var(--success); padding:10px 16px; border-radius:10px; font-size:13px; margin-top:12px; display:none; align-items:center; gap:8px; }
+.success-msg.active { display:flex; }
 
-.error-msg.active { display: block; }
-
-/* SUCCESS BADGE */
-.success-badge {
-  display: none;
-  align-items: center; gap: 8px;
-  background: rgba(34,197,94,0.08);
-  border: 1px solid rgba(34,197,94,0.2);
-  color: var(--success);
-  padding: 8px 14px; border-radius: 10px;
-  font-size: 13px; font-weight: 500;
-  margin-top: 12px;
-}
-
-.success-badge.active { display: flex; }
-
-/* FEATURES */
-.features {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 12px; margin-top: 20px;
-}
-
-.feature-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px; padding: 20px;
-  text-align: center;
-}
-
-.feature-icon {
-  font-size: 24px; margin-bottom: 10px;
-}
-
-.feature-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px; font-weight: 600; margin-bottom: 4px;
-}
-
-.feature-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
-
-footer {
-  position: relative; z-index: 1;
-  text-align: center; padding: 24px;
-  border-top: 1px solid var(--border);
-  font-size: 12px; color: var(--muted);
-}
-
-@media (max-width: 600px) {
-  nav { padding: 16px 20px; }
-  .hero { padding: 40px 20px 30px; }
-  .upload-card { padding: 24px 16px; }
-  .preview-area { grid-template-columns: 1fr; }
-  .features { grid-template-columns: 1fr; }
-  .actions { flex-wrap: wrap; }
+@media(max-width:640px) {
+  nav { padding:16px 20px; }
+  .main { padding:24px 16px 60px; }
+  .workspace { grid-template-columns:1fr; }
+  .options-bar { flex-direction:column; align-items:flex-start; }
 }
 </style>
 </head>
 <body>
-
 <div class="glow glow-1"></div>
 <div class="glow glow-2"></div>
 
 <nav>
-  <div class="logo-brand">RemovePro</div>
-  <div class="nav-badge">✦ Powered by BiRefNet AI</div>
+  <div class="logo-brand">RemoveBG Pro</div>
+  <div class="nav-badge">✦ BiRefNet + Vectorização</div>
 </nav>
-
-<section class="hero">
-  <div class="hero-tag">Remoção de fundo com inteligência artificial</div>
-  <h1>Remova o fundo da<br><span>sua imagem grátis</span></h1>
-  <p class="hero-sub">Faça upload de qualquer imagem e receba o resultado com fundo transparente em segundos.</p>
-</section>
 
 <div class="main">
 
-  <div class="upload-card" id="uploadCard">
-    <div class="loading-overlay" id="loadingOverlay">
-      <div class="loading-ring"></div>
-      <div class="loading-text">Removendo o fundo...</div>
-      <div class="loading-sub">Aguarde alguns segundos</div>
-    </div>
-
-    <!-- DROP ZONE -->
-    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-      <div class="drop-icon">🖼️</div>
-      <div class="drop-title">Arraste sua imagem aqui</div>
-      <div class="drop-sub">ou clique para selecionar um arquivo</div>
-      <div class="drop-formats">
-        <span class="format-pill">PNG</span>
-        <span class="format-pill">JPG</span>
-        <span class="format-pill">WEBP</span>
-        <span class="format-pill">até 10MB</span>
-      </div>
-      <div><label class="btn-browse" for="fileInput">Selecionar arquivo</label></div>
-    </div>
-
-    <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/jpg">
-
-    <!-- PREVIEW -->
-    <div class="preview-area" id="previewArea">
-      <div class="preview-card">
-        <div class="preview-label">Original</div>
-        <div class="preview-img-wrap">
-          <img id="originalImg" src="" alt="Original">
-        </div>
-      </div>
-      <div class="preview-card">
-        <div class="preview-label">Sem fundo</div>
-        <div class="preview-img-wrap checker" id="resultWrap">
-          <img id="resultImg" src="" alt="Resultado" style="display:none">
-          <span id="resultPlaceholder" style="font-size:12px;color:var(--muted)">Aguardando processamento...</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="error-msg" id="errorMsg"></div>
-    <div class="success-badge" id="successBadge">✓ Fundo removido com sucesso!</div>
-
-    <!-- ACTIONS -->
-    <div class="actions" id="actions">
-      <button class="btn-remove" id="btnRemove" onclick="removeBg()">
-        Remover fundo →
-      </button>
-      <button class="btn-download active" id="btnDownload" style="display:none" onclick="downloadResult()">
-        ⬇ Baixar PNG
-      </button>
-      <button class="btn-reset" onclick="resetAll()">Limpar</button>
-    </div>
-
+  <!-- UPLOAD -->
+  <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">🖼️</div>
+    <div class="upload-title">Arraste sua imagem aqui</div>
+    <div class="upload-sub">ou clique para selecionar · PNG, JPG, WEBP até 20MB</div>
+    <label class="btn-browse">Selecionar arquivo</label>
+    <input type="file" id="fileInput" accept="image/*" multiple>
   </div>
 
-  <div class="features">
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <div class="feature-title">Rápido</div>
-      <div class="feature-desc">Resultado em poucos segundos usando IA de última geração</div>
+  <!-- OPÇÕES -->
+  <div class="options-bar">
+    <div class="opt-group">
+      <div class="opt-label">Vectorização</div>
+      <div class="toggle-wrap" onclick="toggleOpt('vectorize')">
+        <div class="toggle" id="toggle-vectorize"></div>
+        <span class="toggle-label">Auto (detecta flat design)</span>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🎯</div>
-      <div class="feature-title">Preciso</div>
-      <div class="feature-desc">BiRefNet — modelo estado da arte para segmentação de imagens</div>
+    <div class="opt-group">
+      <div class="opt-label">Upscaling 2×</div>
+      <div class="toggle-wrap" onclick="toggleOpt('upscale')">
+        <div class="toggle" id="toggle-upscale"></div>
+        <span class="toggle-label">Dobra a resolução</span>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">💾</div>
-      <div class="feature-title">PNG transparente</div>
-      <div class="feature-desc">Baixe em alta resolução com fundo 100% transparente</div>
+    <div class="opt-group">
+      <div class="opt-label">Fundo personalizado</div>
+      <div class="opt-row">
+        <div class="color-pick-wrap">
+          <input type="color" id="bgColorPicker" value="#ffffff">
+          <span>Cor de fundo</span>
+        </div>
+        <button class="btn-remove-bg-opt" onclick="clearBgColor()">Sem fundo</button>
+      </div>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">Brush manual</div>
+      <div class="toggle-wrap" onclick="toggleOpt('brush')">
+        <div class="toggle" id="toggle-brush"></div>
+        <span class="toggle-label">Ativar após remoção</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"><span>✓</span><span id="successText"></span></div>
+
+  <!-- WORKSPACE -->
+  <div class="workspace" id="workspace">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Original</span>
+      </div>
+      <div class="canvas-wrap original">
+        <img id="originalImg" src="" alt="Original">
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Sem fundo</span>
+        <span class="panel-badge" id="complexityBadge"></span>
+      </div>
+      <div class="canvas-wrap" id="resultWrap">
+        <img id="resultImg" src="" alt="Resultado" style="display:none">
+        <canvas id="brushCanvas" style="display:none"></canvas>
+        <span id="resultPlaceholder" style="font-size:12px;color:var(--muted)">Aguardando processamento...</span>
+      </div>
+      <div class="confidence-bar" id="confidenceBar">
+        <span class="conf-label">Confiança</span>
+        <div class="conf-track"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
+        <span class="conf-value" id="confValue">—</span>
+      </div>
+      <div class="brush-toolbar" id="brushToolbar">
+        <button class="brush-btn active" id="btnErase" onclick="setBrushMode('erase')">⬛ Apagar</button>
+        <button class="brush-btn" id="btnRestore" onclick="setBrushMode('restore')">⬜ Restaurar</button>
+        <div class="brush-size-wrap">
+          <span class="brush-size-label">Tamanho</span>
+          <input type="range" min="5" max="80" value="20" id="brushSize">
+          <span class="brush-size-label" id="brushSizeVal">20px</span>
+        </div>
+        <button class="brush-btn danger" onclick="applyBrush()">Aplicar</button>
+        <button class="brush-btn" onclick="resetBrush()">Desfazer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AÇÕES -->
+  <div class="actions" id="actions">
+    <button class="btn-primary" id="btnProcess" onclick="processImage()">Remover fundo →</button>
+    <button class="btn-secondary" onclick="downloadResult()">⬇ Baixar PNG</button>
+    <button class="btn-secondary" id="btnDownloadSVG" style="display:none" onclick="downloadSVG()">⬇ Baixar SVG</button>
+    <button class="btn-secondary" onclick="resetAll()">Limpar</button>
+  </div>
+
+  <!-- BATCH -->
+  <div class="batch-section" id="batchSection">
+    <div class="batch-title">Processamento em lote</div>
+    <div class="batch-grid" id="batchGrid"></div>
+    <div style="margin-top:12px;display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:0" onclick="processBatch()">Processar todos →</button>
+      <button class="btn-secondary" onclick="downloadAllBatch()">⬇ Baixar todos</button>
     </div>
   </div>
 
 </div>
 
-<footer>
-  RemoveBG · Remoção de fundo com IA · Powered by BiRefNet
-</footer>
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-text" id="loadingText">Removendo fundo...</div>
+  <div class="loading-sub" id="loadingSubText">Aguarde alguns segundos</div>
+</div>
 
 <script>
-// ⚠️ CONFIGURE AQUI A URL DO SEU SERVIDOR HUGGING FACE
-const HF_URL = 'https://drops123456-rembg-api.hf.space/remove';
+const HF_URL = 'https://drops123456-rembg-api.hf.space';
 
-let originalFileName = 'imagem';
-let resultBase64 = null;
+let currentFile       = null;
+let currentResult     = null;
+let currentResultB64  = null;
+let currentSVGB64     = null;
+let batchFiles        = [];
+let batchResults      = [];
+let brushMode         = 'erase';
+let isPainting        = false;
+let brushCanvas       = null;
+let brushCtx          = null;
+let opts = { vectorize: false, upscale: false, brush: false };
+let bgColorEnabled    = false;
 
-// Drag and drop
+// ── DRAG & DROP ──────────────────────────
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 
-dropZone.addEventListener('dragover', e => {
-  e.preventDefault();
-  dropZone.classList.add('drag-over');
-});
-
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('drag-over');
-});
-
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
 });
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
 
-fileInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (file) handleFile(file);
-});
-
-function handleFile(file) {
-  if (!file.type.startsWith('image/')) {
-    showError('Por favor, selecione uma imagem válida (PNG, JPG ou WEBP).');
-    return;
+function handleFiles(files) {
+  if (!files.length) return;
+  if (files.length === 1) {
+    currentFile = files[0];
+    loadPreview(files[0]);
+    hideBatch();
+  } else {
+    batchFiles = Array.from(files);
+    setupBatch();
   }
+}
 
-  if (file.size > 10 * 1024 * 1024) {
-    showError('Arquivo muito grande. Máximo 10MB.');
-    return;
-  }
-
-  hideError();
-  hideSuccess();
-  resultBase64 = null;
-
-  originalFileName = file.name.replace(/\.[^/.]+$/, '');
-
+function loadPreview(file) {
   const reader = new FileReader();
   reader.onload = e => {
     document.getElementById('originalImg').src = e.target.result;
     document.getElementById('resultImg').style.display = 'none';
     document.getElementById('resultImg').src = '';
     document.getElementById('resultPlaceholder').style.display = 'block';
-    document.getElementById('btnDownload').style.display = 'none';
-    document.getElementById('previewArea').classList.add('active');
+    document.getElementById('workspace').classList.add('active');
     document.getElementById('actions').classList.add('active');
-    document.getElementById('btnRemove').disabled = false;
-    hideSuccess();
+    document.getElementById('btnDownloadSVG').style.display = 'none';
+    document.getElementById('confidenceBar').classList.remove('active');
+    document.getElementById('brushToolbar').classList.remove('active');
+    if (brushCanvas) brushCanvas.style.display = 'none';
+    currentResult = null; currentResultB64 = null; currentSVGB64 = null;
+    hideMessages();
   };
   reader.readAsDataURL(file);
 }
 
-async function removeBg() {
-  const imgSrc = document.getElementById('originalImg').src;
-  if (!imgSrc) return;
+// ── OPÇÕES ───────────────────────────────
+function toggleOpt(key) {
+  opts[key] = !opts[key];
+  const el = document.getElementById('toggle-' + key);
+  el.classList.toggle('on', opts[key]);
+}
 
-  hideError();
-  hideSuccess();
-  document.getElementById('loadingOverlay').classList.add('active');
-  document.getElementById('btnRemove').disabled = true;
-  document.getElementById('btnDownload').style.display = 'none';
+function clearBgColor() { bgColorEnabled = false; }
+document.getElementById('bgColorPicker').addEventListener('change', () => { bgColorEnabled = true; });
+
+// ── PROCESSAMENTO ─────────────────────────
+async function processImage() {
+  if (!currentFile) return;
+  showLoading('Removendo fundo...', 'Analisando imagem com BiRefNet');
+  hideMessages();
+
+  const b64 = await fileToBase64(currentFile);
+
+  const body = { image: b64 };
+  if (opts.vectorize)  body.force_vector = null;  // auto
+  if (opts.upscale)    body.upscale = true;
+  if (bgColorEnabled)  body.bg_color = document.getElementById('bgColorPicker').value;
 
   try {
-    // Converte imagem para base64 puro (sem o prefixo data:...)
-    const base64 = imgSrc.split(',')[1];
-
-    const response = await fetch(HF_URL, {
+    const res  = await fetch(HF_URL + '/remove', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: base64 })
+      body: JSON.stringify(body)
     });
+    const data = await res.json();
+    hideLoading();
 
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Erro ${response.status}: ${text}`);
+    currentResultB64 = data.image;
+    currentSVGB64    = data.svg || null;
+    currentResult    = `data:${data.mimeType};base64,${data.image}`;
+
+    const img = document.getElementById('resultImg');
+    img.src = currentResult;
+    img.style.display = 'block';
+    document.getElementById('resultPlaceholder').style.display = 'none';
+
+    // Confidence
+    if (data.confidence !== undefined) {
+      const pct = Math.round(data.confidence * 100);
+      document.getElementById('confFill').style.width = pct + '%';
+      document.getElementById('confValue').textContent = pct + '%';
+      document.getElementById('confidenceBar').classList.add('active');
     }
 
-    const data = await response.json();
+    // Complexity badge
+    const badge = document.getElementById('complexityBadge');
+    badge.textContent = data.method === 'vectorized' ? 'Vetorizado' : data.complexity === 'flat' ? 'Flat' : 'Complexo';
+    badge.className = 'panel-badge ' + (data.complexity === 'flat' ? 'badge-flat' : 'badge-complex');
 
-    if (!data.image) throw new Error('Resposta inválida do servidor.');
+    // SVG button
+    if (currentSVGB64) document.getElementById('btnDownloadSVG').style.display = 'block';
 
-    resultBase64 = data.image;
+    // Brush
+    if (opts.brush) setupBrushCanvas();
 
-    const resultSrc = `data:image/png;base64,${data.image}`;
-    document.getElementById('resultImg').src = resultSrc;
-    document.getElementById('resultImg').style.display = 'block';
-    document.getElementById('resultPlaceholder').style.display = 'none';
-    document.getElementById('btnDownload').style.display = 'block';
-    showSuccess();
+    showSuccess(data.method === 'vectorized' ? 'Fundo removido e vetorizado com sucesso!' : 'Fundo removido com sucesso!');
 
-  } catch (err) {
-    showError(err.message || 'Erro ao processar imagem. Tente novamente.');
-    console.error(err);
-  } finally {
-    document.getElementById('loadingOverlay').classList.remove('active');
-    document.getElementById('btnRemove').disabled = false;
+  } catch(e) {
+    hideLoading();
+    showError('Erro ao processar: ' + e.message);
   }
 }
 
-function downloadResult() {
-  if (!resultBase64) return;
+// ── BRUSH ─────────────────────────────────
+function setupBrushCanvas() {
+  const wrap  = document.getElementById('resultWrap');
+  const img   = document.getElementById('resultImg');
+  brushCanvas = document.getElementById('brushCanvas');
+  brushCtx    = brushCanvas.getContext('2d');
+
+  brushCanvas.width  = img.naturalWidth  || img.clientWidth;
+  brushCanvas.height = img.naturalHeight || img.clientHeight;
+  brushCanvas.style.display = 'block';
+
+  document.getElementById('brushToolbar').classList.add('active');
+
+  brushCanvas.addEventListener('mousedown', e => { isPainting = true; paint(e); });
+  brushCanvas.addEventListener('mousemove', e => { if(isPainting) paint(e); });
+  brushCanvas.addEventListener('mouseup',   () => isPainting = false);
+  brushCanvas.addEventListener('mouseleave',() => isPainting = false);
+
+  document.getElementById('brushSize').addEventListener('input', e => {
+    document.getElementById('brushSizeVal').textContent = e.target.value + 'px';
+  });
+}
+
+function getBrushPos(e) {
+  const rect = brushCanvas.getBoundingClientRect();
+  const scaleX = brushCanvas.width  / rect.width;
+  const scaleY = brushCanvas.height / rect.height;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top)  * scaleY
+  };
+}
+
+function paint(e) {
+  const {x, y} = getBrushPos(e);
+  const size    = parseInt(document.getElementById('brushSize').value);
+  brushCtx.beginPath();
+  brushCtx.arc(x, y, size, 0, Math.PI*2);
+  brushCtx.fillStyle = brushMode === 'erase' ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)';
+  brushCtx.fill();
+}
+
+function setBrushMode(mode) {
+  brushMode = mode;
+  document.getElementById('btnErase').classList.toggle('active', mode === 'erase');
+  document.getElementById('btnRestore').classList.toggle('active', mode === 'restore');
+}
+
+async function applyBrush() {
+  if (!currentResultB64 || !brushCanvas) return;
+  showLoading('Aplicando refinamento...', '');
+
+  const maskB64 = brushCanvas.toDataURL('image/png').split(',')[1];
+
+  try {
+    const res  = await fetch(HF_URL + '/refine', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ result: currentResultB64, mask: maskB64 })
+    });
+    const data = await res.json();
+    hideLoading();
+
+    currentResultB64 = data.image;
+    currentResult    = `data:image/png;base64,${data.image}`;
+    document.getElementById('resultImg').src = currentResult;
+
+    resetBrush();
+    showSuccess('Refinamento aplicado!');
+  } catch(e) {
+    hideLoading();
+    showError('Erro ao aplicar brush: ' + e.message);
+  }
+}
+
+function resetBrush() {
+  if (brushCtx) brushCtx.clearRect(0, 0, brushCanvas.width, brushCanvas.height);
+}
+
+// ── BATCH ─────────────────────────────────
+function setupBatch() {
+  const section = document.getElementById('batchSection');
+  const grid    = document.getElementById('batchGrid');
+  section.classList.add('active');
+  document.getElementById('workspace').classList.remove('active');
+  document.getElementById('actions').classList.remove('active');
+  grid.innerHTML = '';
+
+  batchFiles.forEach((file, i) => {
+    const item = document.createElement('div');
+    item.className = 'batch-item';
+    item.id = 'batch-item-' + i;
+    item.innerHTML = `
+      <div class="batch-thumb" id="batch-thumb-${i}">
+        <span style="font-size:10px;color:var(--muted)">carregando...</span>
+      </div>
+      <div class="batch-foot">
+        <span class="batch-name">${file.name.substring(0,12)}...</span>
+        <button class="batch-dl" id="batch-dl-${i}" style="display:none" onclick="downloadBatchItem(${i})">⬇</button>
+      </div>`;
+    grid.appendChild(item);
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const thumb = document.getElementById('batch-thumb-' + i);
+      thumb.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function processBatch() {
+  showLoading('Processando lote...', `0 / ${batchFiles.length} imagens`);
+  batchResults = new Array(batchFiles.length).fill(null);
+
+  const b64s = await Promise.all(batchFiles.map(fileToBase64));
+
+  const body = { images: b64s };
+  if (bgColorEnabled) body.bg_color = document.getElementById('bgColorPicker').value;
+  if (opts.upscale)   body.upscale  = true;
+
+  try {
+    const res  = await fetch(HF_URL + '/remove-batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    hideLoading();
+
+    data.results.forEach(r => {
+      if (!r.success) return;
+      batchResults[r.index] = r.image;
+      const thumb = document.getElementById('batch-thumb-' + r.index);
+      thumb.innerHTML = `<img src="data:image/png;base64,${r.image}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      document.getElementById('batch-dl-' + r.index).style.display = 'block';
+    });
+
+    showSuccess(`${data.results.filter(r=>r.success).length} imagens processadas!`);
+  } catch(e) {
+    hideLoading();
+    showError('Erro no batch: ' + e.message);
+  }
+}
+
+function downloadBatchItem(i) {
+  if (!batchResults[i]) return;
   const a = document.createElement('a');
-  a.href = `data:image/png;base64,${resultBase64}`;
-  a.download = `${originalFileName}-sem-fundo.png`;
+  a.href     = `data:image/png;base64,${batchResults[i]}`;
+  a.download = batchFiles[i].name.replace(/\.[^.]+$/, '') + '-sem-fundo.png';
   a.click();
 }
 
-function resetAll() {
-  document.getElementById('fileInput').value = '';
-  document.getElementById('originalImg').src = '';
-  document.getElementById('resultImg').src = '';
-  document.getElementById('resultImg').style.display = 'none';
-  document.getElementById('resultPlaceholder').style.display = 'block';
-  document.getElementById('previewArea').classList.remove('active');
-  document.getElementById('actions').classList.remove('active');
-  document.getElementById('btnDownload').style.display = 'none';
-  resultBase64 = null;
-  hideError();
-  hideSuccess();
+function downloadAllBatch() {
+  batchResults.forEach((r, i) => { if(r) setTimeout(() => downloadBatchItem(i), i * 300); });
 }
+
+function hideBatch() {
+  document.getElementById('batchSection').classList.remove('active');
+}
+
+// ── DOWNLOAD ──────────────────────────────
+function downloadResult() {
+  if (!currentResultB64) return;
+  const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
+  const a    = document.createElement('a');
+  a.href     = `data:image/png;base64,${currentResultB64}`;
+  a.download = name + '-sem-fundo.png';
+  a.click();
+}
+
+function downloadSVG() {
+  if (!currentSVGB64) return;
+  const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
+  const a    = document.createElement('a');
+  a.href     = `data:image/svg+xml;base64,${currentSVGB64}`;
+  a.download = name + '-sem-fundo.svg';
+  a.click();
+}
+
+// ── UTILITÁRIOS ───────────────────────────
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = e => res(e.target.result.split(',')[1]);
+    r.onerror = () => rej(new Error('Falha ao ler arquivo'));
+    r.readAsDataURL(file);
+  });
+}
+
+function showLoading(text, sub) {
+  document.getElementById('loadingText').textContent    = text;
+  document.getElementById('loadingSubText').textContent = sub;
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.classList.add('active');
+  el.textContent = msg; el.classList.add('active');
+  document.getElementById('successMsg').classList.remove('active');
 }
-
-function hideError() {
+function showSuccess(msg) {
+  document.getElementById('successText').textContent = msg;
+  document.getElementById('successMsg').classList.add('active');
   document.getElementById('errorMsg').classList.remove('active');
 }
-
-function showSuccess() {
-  document.getElementById('successBadge').classList.add('active');
+function hideMessages() {
+  document.getElementById('errorMsg').classList.remove('active');
+  document.getElementById('successMsg').classList.remove('active');
 }
 
-function hideSuccess() {
-  document.getElementById('successBadge').classList.remove('active');
+function resetAll() {
+  currentFile = currentResult = currentResultB64 = currentSVGB64 = null;
+  batchFiles = []; batchResults = [];
+  fileInput.value = '';
+  document.getElementById('originalImg').src = '';
+  document.getElementById('resultImg').src   = '';
+  document.getElementById('resultImg').style.display = 'none';
+  document.getElementById('resultPlaceholder').style.display = 'block';
+  document.getElementById('workspace').classList.remove('active');
+  document.getElementById('actions').classList.remove('active');
+  document.getElementById('batchSection').classList.remove('active');
+  document.getElementById('btnDownloadSVG').style.display = 'none';
+  document.getElementById('confidenceBar').classList.remove('active');
+  document.getElementById('brushToolbar').classList.remove('active');
+  if (brushCanvas) { brushCanvas.style.display = 'none'; resetBrush(); }
+  hideMessages();
 }
 </script>
 </body>
