@@ -589,12 +589,15 @@ function hideBatch() {
 
 // ── DOWNLOAD ──────────────────────────────
 function downloadResult() {
-  if (!currentResultB64) return;
-  const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
-  const a    = document.createElement('a');
-  a.href     = `data:image/png;base64,${currentResultB64}`;
-  a.download = name + '-sem-fundo.png';
-  a.click();
+    if (!currentResultB64) return;
+    const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
+    const a = document.createElement('a');
+
+    // Detecta se é SVG ou PNG
+    const isSvg = currentResult && currentResult.includes('image/svg');
+    a.href     = currentResult;
+    a.download = name + '-sem-fundo.' + (isSvg ? 'svg' : 'png');
+    a.click();
 }
 
 function downloadSVG() {
