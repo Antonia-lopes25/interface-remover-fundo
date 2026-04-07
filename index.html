@@ -57,11 +57,12 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
 .toggle::after { content:''; position:absolute; top:3px; left:3px; width:14px; height:14px; background:#fff; border-radius:50%; transition:transform 0.2s; }
 .toggle.on::after { transform:translateX(16px); }
 .toggle-label { font-size:12px; color:var(--muted); }
-.color-pick-wrap { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; }
+
+/* FIX: fundo personalizado agora tem toggle explícito */
+.color-pick-wrap { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; opacity:0.4; pointer-events:none; transition:opacity 0.2s; }
+.color-pick-wrap.active { opacity:1; pointer-events:all; }
 .color-pick-wrap input[type="color"] { width:24px; height:24px; border:none; border-radius:4px; padding:0; cursor:pointer; background:none; }
 .color-pick-wrap span { font-size:12px; color:var(--muted); }
-.btn-remove-bg-opt { background:none; border:1px solid rgba(79,142,247,0.3); color:var(--accent); padding:4px 12px; border-radius:6px; font-size:11px; cursor:pointer; transition:background 0.2s; }
-.btn-remove-bg-opt:hover { background:rgba(79,142,247,0.1); }
 
 .workspace { display:none; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
 .workspace.active { display:grid; }
@@ -192,16 +193,22 @@ canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
         <span class="toggle-label">Dobra a resolução</span>
       </div>
     </div>
+
     <div class="opt-group">
       <div class="opt-label">Fundo personalizado</div>
       <div class="opt-row">
-        <div class="color-pick-wrap">
-          <input type="color" id="bgColorPicker" value="#ffffff">
-          <span>Cor de fundo</span>
+        <!-- FIX: toggle explícito para ativar o fundo — evita envio acidental -->
+        <div class="toggle-wrap" onclick="toggleBgColor()">
+          <div class="toggle" id="toggle-bg"></div>
+          <span class="toggle-label">Ativar fundo</span>
         </div>
-        <button class="btn-remove-bg-opt" onclick="clearBgColor()">Sem fundo</button>
+        <div class="color-pick-wrap" id="colorPickWrap">
+          <input type="color" id="bgColorPicker" value="#ffffff">
+          <span>Cor</span>
+        </div>
       </div>
     </div>
+
     <div class="opt-group">
       <div class="opt-label">Brush manual</div>
       <div class="toggle-wrap" onclick="toggleOpt('brush')">
@@ -288,8 +295,10 @@ let brushMode        = 'erase';
 let isPainting       = false;
 let brushCanvas      = null;
 let brushCtx         = null;
+
+// FIX: opts separados — bgColorEnabled só ativa com toggle explícito
 let opts = { upscale: false, brush: false };
-let bgColorEnabled   = false;
+let bgColorEnabled = false;
 
 // ── DRAG & DROP ──────────────────────────
 const dropZone = document.getElementById('dropZone');
@@ -339,8 +348,12 @@ function toggleOpt(key) {
   document.getElementById('toggle-' + key).classList.toggle('on', opts[key]);
 }
 
-function clearBgColor() { bgColorEnabled = false; }
-document.getElementById('bgColorPicker').addEventListener('change', () => { bgColorEnabled = true; });
+// FIX: toggle explícito para fundo personalizado
+function toggleBgColor() {
+  bgColorEnabled = !bgColorEnabled;
+  document.getElementById('toggle-bg').classList.toggle('on', bgColorEnabled);
+  document.getElementById('colorPickWrap').classList.toggle('active', bgColorEnabled);
+}
 
 // ── PROCESSAMENTO ─────────────────────────
 async function processImage() {
@@ -351,6 +364,7 @@ async function processImage() {
   const b64 = await fileToBase64(currentFile);
   const body = { image: b64 };
   if (opts.upscale)   body.upscale   = true;
+  // FIX: só envia bg_color se o toggle foi explicitamente ativado
   if (bgColorEnabled) body.bg_color  = document.getElementById('bgColorPicker').value;
 
   try {
@@ -382,7 +396,6 @@ async function processImage() {
     badge.className   = 'panel-badge ' + (data.complexity === 'flat' ? 'badge-flat' : 'badge-complex');
 
     if (opts.brush) setupBrushCanvas();
-
     showSuccess('Fundo removido com sucesso!');
 
   } catch(e) {
@@ -391,7 +404,7 @@ async function processImage() {
   }
 }
 
-// ── DOWNLOAD CORRETO (Blob binário) ───────
+// ── DOWNLOAD CORRETO (Blob binário PNG) ──
 function base64ToBlob(b64, mimeType) {
   const byteChars   = atob(b64);
   const byteNumbers = new Array(byteChars.length);
