@@ -57,19 +57,139 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
 .toggle::after { content:''; position:absolute; top:3px; left:3px; width:14px; height:14px; background:#fff; border-radius:50%; transition:transform 0.2s; }
 .toggle.on::after { transform:translateX(16px); }
 .toggle-label { font-size:12px; color:var(--muted); }
-.color-pick-wrap { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; }
 
 /* FIX: fundo personalizado agora tem toggle explícito */
 .color-pick-wrap { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; opacity:0.4; pointer-events:none; transition:opacity 0.2s; }
 .color-pick-wrap.active { opacity:1; pointer-events:all; }
 .color-pick-wrap input[type="color"] { width:24px; height:24px; border:none; border-radius:4px; padding:0; cursor:pointer; background:none; }
 .color-pick-wrap span { font-size:12px; color:var(--muted); }
-.btn-remove-bg-opt { background:none; border:1px solid rgba(79,142,247,0.3); color:var(--accent); padding:4px 12px; border-radius:6px; font-size:11px; cursor:pointer; transition:background 0.2s; }
-.btn-remove-bg-opt:hover { background:rgba(79,142,247,0.1); }
 
 .workspace { display:none; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
 .workspace.active { display:grid; }
-@@ -192,16 +193,22 @@
+
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.panel-header { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.panel-title { font-size:11px; font-weight:600; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.panel-badge { font-size:10px; padding:2px 8px; border-radius:20px; }
+.badge-flat { background:rgba(34,197,94,0.1); color:var(--success); }
+.badge-complex { background:rgba(79,142,247,0.1); color:var(--accent); }
+
+.canvas-wrap {
+  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  padding:16px; position:relative; overflow:hidden;
+  background:repeating-conic-gradient(#1a1f2e 0% 25%, #141824 0% 50%) 0 0/20px 20px;
+}
+.canvas-wrap.original { background:var(--surface2); }
+.canvas-wrap img { max-width:100%; max-height:100%; object-fit:contain; border-radius:4px; }
+canvas#brushCanvas { position:absolute; inset:0; cursor:crosshair; }
+
+.brush-toolbar {
+  display:none; padding:12px 16px; border-top:1px solid var(--border);
+  gap:10px; align-items:center; flex-wrap:wrap;
+}
+.brush-toolbar.active { display:flex; }
+.brush-btn { background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:6px 14px; border-radius:8px; font-size:12px; cursor:pointer; transition:all 0.2s; }
+.brush-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(79,142,247,0.1); }
+.brush-btn.danger { border-color:rgba(239,68,68,0.3); color:var(--danger); }
+.brush-btn.danger:hover { background:rgba(239,68,68,0.1); }
+.brush-size-wrap { display:flex; align-items:center; gap:6px; }
+.brush-size-wrap input { width:80px; accent-color:var(--accent); }
+.brush-size-label { font-size:11px; color:var(--muted); }
+
+.confidence-bar {
+  display:none; padding:10px 16px; border-top:1px solid var(--border);
+  align-items:center; gap:10px;
+}
+.confidence-bar.active { display:flex; }
+.conf-label { font-size:11px; color:var(--muted); white-space:nowrap; }
+.conf-track { flex:1; height:4px; background:var(--border); border-radius:2px; }
+.conf-fill { height:4px; border-radius:2px; background:var(--success); transition:width 0.5s; }
+.conf-value { font-size:11px; color:var(--success); font-weight:600; white-space:nowrap; }
+
+.actions { display:none; gap:10px; flex-wrap:wrap; }
+.actions.active { display:flex; }
+
+.btn-primary {
+  flex:1; padding:14px; background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none; border-radius:12px; color:#fff; font-family:'Syne',sans-serif;
+  font-size:15px; font-weight:700; cursor:pointer; transition:opacity 0.2s, transform 0.2s;
+  min-width:160px;
+}
+.btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+.btn-primary:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+.btn-secondary {
+  padding:14px 20px; background:var(--surface2); border:1px solid var(--border);
+  border-radius:12px; color:var(--text); font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:500; cursor:pointer; transition:border-color 0.2s;
+}
+.btn-secondary:hover { border-color:rgba(79,142,247,0.3); }
+
+.batch-section {
+  background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding:20px; margin-top:20px; display:none;
+}
+.batch-section.active { display:block; }
+.batch-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:12px; }
+.batch-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px; }
+.batch-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.batch-thumb {
+  aspect-ratio:1; background:repeating-conic-gradient(#1a1f2e 0% 25%, #141824 0% 50%) 0 0/16px 16px;
+  display:flex; align-items:center; justify-content:center; padding:8px;
+}
+.batch-thumb img { max-width:100%; max-height:100%; object-fit:contain; }
+.batch-foot { padding:6px 8px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); }
+.batch-name { font-size:10px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70px; }
+.batch-dl { background:none; border:none; color:var(--accent); font-size:11px; cursor:pointer; }
+
+.loading-overlay {
+  display:none; position:fixed; inset:0; background:rgba(8,12,20,0.8);
+  align-items:center; justify-content:center; flex-direction:column;
+  gap:16px; z-index:100;
+}
+.loading-overlay.active { display:flex; }
+.loading-ring { width:56px; height:56px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-text { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; }
+.loading-sub { font-size:13px; color:var(--muted); }
+
+.error-msg { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#F87171; padding:12px 16px; border-radius:10px; font-size:13px; margin-top:12px; display:none; }
+.error-msg.active { display:block; }
+.success-msg { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); color:var(--success); padding:10px 16px; border-radius:10px; font-size:13px; margin-top:12px; display:none; align-items:center; gap:8px; }
+.success-msg.active { display:flex; }
+
+@media(max-width:640px) {
+  nav { padding:16px 20px; }
+  .main { padding:24px 16px 60px; }
+  .workspace { grid-template-columns:1fr; }
+  .options-bar { flex-direction:column; align-items:flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<nav>
+  <div class="logo-brand">RemoveBG Pro</div>
+  <div class="nav-badge">✦ BiRefNet</div>
+</nav>
+
+<div class="main">
+
+  <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">🖼️</div>
+    <div class="upload-title">Arraste sua imagem aqui</div>
+    <div class="upload-sub">ou clique para selecionar · PNG, JPG, WEBP até 20MB</div>
+    <label class="btn-browse">Selecionar arquivo</label>
+    <input type="file" id="fileInput" accept="image/*" multiple>
+  </div>
+
+  <div class="options-bar">
+    <div class="opt-group">
+      <div class="opt-label">Upscaling 2×</div>
+      <div class="toggle-wrap" onclick="toggleOpt('upscale')">
+        <div class="toggle" id="toggle-upscale"></div>
         <span class="toggle-label">Dobra a resolução</span>
       </div>
     </div>
@@ -77,7 +197,6 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
     <div class="opt-group">
       <div class="opt-label">Fundo personalizado</div>
       <div class="opt-row">
-        <div class="color-pick-wrap">
         <!-- FIX: toggle explícito para ativar o fundo — evita envio acidental -->
         <div class="toggle-wrap" onclick="toggleBgColor()">
           <div class="toggle" id="toggle-bg"></div>
@@ -85,34 +204,150 @@ nav { position:relative; z-index:10; display:flex; align-items:center; justify-c
         </div>
         <div class="color-pick-wrap" id="colorPickWrap">
           <input type="color" id="bgColorPicker" value="#ffffff">
-          <span>Cor de fundo</span>
           <span>Cor</span>
         </div>
-        <button class="btn-remove-bg-opt" onclick="clearBgColor()">Sem fundo</button>
       </div>
     </div>
 
     <div class="opt-group">
       <div class="opt-label">Brush manual</div>
       <div class="toggle-wrap" onclick="toggleOpt('brush')">
-@@ -288,8 +295,10 @@
+        <div class="toggle" id="toggle-brush"></div>
+        <span class="toggle-label">Ativar após remoção</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"><span>✓</span><span id="successText"></span></div>
+
+  <div class="workspace" id="workspace">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Original</span>
+      </div>
+      <div class="canvas-wrap original">
+        <img id="originalImg" src="" alt="Original">
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Sem fundo</span>
+        <span class="panel-badge" id="complexityBadge"></span>
+      </div>
+      <div class="canvas-wrap" id="resultWrap">
+        <img id="resultImg" src="" alt="Resultado" style="display:none">
+        <canvas id="brushCanvas" style="display:none"></canvas>
+        <span id="resultPlaceholder" style="font-size:12px;color:var(--muted)">Aguardando processamento...</span>
+      </div>
+      <div class="confidence-bar" id="confidenceBar">
+        <span class="conf-label">Confiança</span>
+        <div class="conf-track"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
+        <span class="conf-value" id="confValue">—</span>
+      </div>
+      <div class="brush-toolbar" id="brushToolbar">
+        <button class="brush-btn active" id="btnErase" onclick="setBrushMode('erase')">⬛ Apagar</button>
+        <button class="brush-btn" id="btnRestore" onclick="setBrushMode('restore')">⬜ Restaurar</button>
+        <div class="brush-size-wrap">
+          <span class="brush-size-label">Tamanho</span>
+          <input type="range" min="5" max="80" value="20" id="brushSize">
+          <span class="brush-size-label" id="brushSizeVal">20px</span>
+        </div>
+        <button class="brush-btn danger" onclick="applyBrush()">Aplicar</button>
+        <button class="brush-btn" onclick="resetBrush()">Desfazer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions" id="actions">
+    <button class="btn-primary" id="btnProcess" onclick="processImage()">Remover fundo →</button>
+    <button class="btn-secondary" onclick="downloadResult()">⬇ Baixar PNG</button>
+    <button class="btn-secondary" onclick="resetAll()">Limpar</button>
+  </div>
+
+  <div class="batch-section" id="batchSection">
+    <div class="batch-title">Processamento em lote</div>
+    <div class="batch-grid" id="batchGrid"></div>
+    <div style="margin-top:12px;display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:0" onclick="processBatch()">Processar todos →</button>
+      <button class="btn-secondary" onclick="downloadAllBatch()">⬇ Baixar todos</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-text" id="loadingText">Removendo fundo...</div>
+  <div class="loading-sub" id="loadingSubText">Aguarde alguns segundos</div>
+</div>
+
+<script>
+const HF_URL = 'https://drops123456-rembg-api.hf.space';
+
+let currentFile      = null;
+let currentResultB64 = null;
+let currentResult    = null;
+let batchFiles       = [];
+let batchResults     = [];
+let brushMode        = 'erase';
 let isPainting       = false;
 let brushCanvas      = null;
 let brushCtx         = null;
 
 // FIX: opts separados — bgColorEnabled só ativa com toggle explícito
 let opts = { upscale: false, brush: false };
-let bgColorEnabled   = false;
 let bgColorEnabled = false;
 
 // ── DRAG & DROP ──────────────────────────
 const dropZone = document.getElementById('dropZone');
-@@ -339,8 +348,12 @@
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+function handleFiles(files) {
+  if (!files.length) return;
+  if (files.length === 1) {
+    currentFile = files[0];
+    loadPreview(files[0]);
+    hideBatch();
+  } else {
+    batchFiles = Array.from(files);
+    setupBatch();
+  }
+}
+
+function loadPreview(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('originalImg').src = e.target.result;
+    document.getElementById('resultImg').style.display = 'none';
+    document.getElementById('resultImg').src = '';
+    document.getElementById('resultPlaceholder').style.display = 'block';
+    document.getElementById('workspace').classList.add('active');
+    document.getElementById('actions').classList.add('active');
+    document.getElementById('confidenceBar').classList.remove('active');
+    document.getElementById('brushToolbar').classList.remove('active');
+    if (brushCanvas) brushCanvas.style.display = 'none';
+    currentResult = null; currentResultB64 = null;
+    hideMessages();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── OPÇÕES ───────────────────────────────
+function toggleOpt(key) {
+  opts[key] = !opts[key];
   document.getElementById('toggle-' + key).classList.toggle('on', opts[key]);
 }
 
-function clearBgColor() { bgColorEnabled = false; }
-document.getElementById('bgColorPicker').addEventListener('change', () => { bgColorEnabled = true; });
 // FIX: toggle explícito para fundo personalizado
 function toggleBgColor() {
   bgColorEnabled = !bgColorEnabled;
@@ -122,7 +357,10 @@ function toggleBgColor() {
 
 // ── PROCESSAMENTO ─────────────────────────
 async function processImage() {
-@@ -351,6 +364,7 @@
+  if (!currentFile) return;
+  showLoading('Removendo fundo...', 'Analisando imagem com BiRefNet');
+  hideMessages();
+
   const b64 = await fileToBase64(currentFile);
   const body = { image: b64 };
   if (opts.upscale)   body.upscale   = true;
@@ -130,20 +368,263 @@ async function processImage() {
   if (bgColorEnabled) body.bg_color  = document.getElementById('bgColorPicker').value;
 
   try {
-@@ -382,7 +396,6 @@
+    const res  = await fetch(HF_URL + '/remove', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    hideLoading();
+
+    currentResultB64 = data.image;
+    currentResult    = `data:image/png;base64,${data.image}`;
+
+    const img = document.getElementById('resultImg');
+    img.src = currentResult;
+    img.style.display = 'block';
+    document.getElementById('resultPlaceholder').style.display = 'none';
+
+    if (data.confidence !== undefined) {
+      const pct = Math.round(data.confidence * 100);
+      document.getElementById('confFill').style.width = pct + '%';
+      document.getElementById('confValue').textContent = pct + '%';
+      document.getElementById('confidenceBar').classList.add('active');
+    }
+
+    const badge = document.getElementById('complexityBadge');
+    badge.textContent = data.complexity === 'flat' ? 'Flat' : 'Complexo';
     badge.className   = 'panel-badge ' + (data.complexity === 'flat' ? 'badge-flat' : 'badge-complex');
 
     if (opts.brush) setupBrushCanvas();
-
     showSuccess('Fundo removido com sucesso!');
 
   } catch(e) {
-@@ -391,7 +404,7 @@
+    hideLoading();
+    showError('Erro ao processar: ' + e.message);
   }
 }
 
-// ── DOWNLOAD CORRETO (Blob binário) ───────
 // ── DOWNLOAD CORRETO (Blob binário PNG) ──
 function base64ToBlob(b64, mimeType) {
   const byteChars   = atob(b64);
   const byteNumbers = new Array(byteChars.length);
+  for (let i = 0; i < byteChars.length; i++) {
+    byteNumbers[i] = byteChars.charCodeAt(i);
+  }
+  return new Blob([new Uint8Array(byteNumbers)], { type: mimeType });
+}
+
+function downloadResult() {
+  if (!currentResultB64) return;
+  const name = (currentFile?.name || 'imagem').replace(/\.[^.]+$/, '');
+  const blob = base64ToBlob(currentResultB64, 'image/png');
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = name + '-sem-fundo.png';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadBatchItem(i) {
+  if (!batchResults[i]) return;
+  const name = batchFiles[i].name.replace(/\.[^.]+$/, '');
+  const blob = base64ToBlob(batchResults[i], 'image/png');
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = name + '-sem-fundo.png';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadAllBatch() {
+  batchResults.forEach((r, i) => {
+    if (r) setTimeout(() => downloadBatchItem(i), i * 300);
+  });
+}
+
+// ── BRUSH ─────────────────────────────────
+function setupBrushCanvas() {
+  const img   = document.getElementById('resultImg');
+  brushCanvas = document.getElementById('brushCanvas');
+  brushCtx    = brushCanvas.getContext('2d');
+  brushCanvas.width  = img.naturalWidth  || img.clientWidth;
+  brushCanvas.height = img.naturalHeight || img.clientHeight;
+  brushCanvas.style.display = 'block';
+  document.getElementById('brushToolbar').classList.add('active');
+
+  brushCanvas.addEventListener('mousedown', e => { isPainting = true; paint(e); });
+  brushCanvas.addEventListener('mousemove', e => { if(isPainting) paint(e); });
+  brushCanvas.addEventListener('mouseup',   () => isPainting = false);
+  brushCanvas.addEventListener('mouseleave',() => isPainting = false);
+
+  document.getElementById('brushSize').addEventListener('input', e => {
+    document.getElementById('brushSizeVal').textContent = e.target.value + 'px';
+  });
+}
+
+function getBrushPos(e) {
+  const rect   = brushCanvas.getBoundingClientRect();
+  const scaleX = brushCanvas.width  / rect.width;
+  const scaleY = brushCanvas.height / rect.height;
+  return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+}
+
+function paint(e) {
+  const {x, y} = getBrushPos(e);
+  const size    = parseInt(document.getElementById('brushSize').value);
+  brushCtx.beginPath();
+  brushCtx.arc(x, y, size, 0, Math.PI*2);
+  brushCtx.fillStyle = brushMode === 'erase' ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)';
+  brushCtx.fill();
+}
+
+function setBrushMode(mode) {
+  brushMode = mode;
+  document.getElementById('btnErase').classList.toggle('active', mode === 'erase');
+  document.getElementById('btnRestore').classList.toggle('active', mode === 'restore');
+}
+
+async function applyBrush() {
+  if (!currentResultB64 || !brushCanvas) return;
+  showLoading('Aplicando refinamento...', '');
+  const maskB64 = brushCanvas.toDataURL('image/png').split(',')[1];
+  try {
+    const res  = await fetch(HF_URL + '/refine', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ result: currentResultB64, mask: maskB64 })
+    });
+    const data = await res.json();
+    hideLoading();
+    currentResultB64 = data.image;
+    currentResult    = `data:image/png;base64,${data.image}`;
+    document.getElementById('resultImg').src = currentResult;
+    resetBrush();
+    showSuccess('Refinamento aplicado!');
+  } catch(e) {
+    hideLoading();
+    showError('Erro ao aplicar brush: ' + e.message);
+  }
+}
+
+function resetBrush() {
+  if (brushCtx) brushCtx.clearRect(0, 0, brushCanvas.width, brushCanvas.height);
+}
+
+// ── BATCH ─────────────────────────────────
+function setupBatch() {
+  const section = document.getElementById('batchSection');
+  const grid    = document.getElementById('batchGrid');
+  section.classList.add('active');
+  document.getElementById('workspace').classList.remove('active');
+  document.getElementById('actions').classList.remove('active');
+  grid.innerHTML = '';
+
+  batchFiles.forEach((file, i) => {
+    const item = document.createElement('div');
+    item.className = 'batch-item';
+    item.innerHTML = `
+      <div class="batch-thumb" id="batch-thumb-${i}">
+        <span style="font-size:10px;color:var(--muted)">carregando...</span>
+      </div>
+      <div class="batch-foot">
+        <span class="batch-name">${file.name.substring(0,12)}...</span>
+        <button class="batch-dl" id="batch-dl-${i}" style="display:none" onclick="downloadBatchItem(${i})">⬇</button>
+      </div>`;
+    grid.appendChild(item);
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('batch-thumb-' + i).innerHTML =
+        `<img src="${e.target.result}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function processBatch() {
+  showLoading('Processando lote...', `0 / ${batchFiles.length} imagens`);
+  batchResults = new Array(batchFiles.length).fill(null);
+  const b64s   = await Promise.all(batchFiles.map(fileToBase64));
+  const body   = { images: b64s };
+  if (bgColorEnabled) body.bg_color = document.getElementById('bgColorPicker').value;
+  if (opts.upscale)   body.upscale  = true;
+  try {
+    const res  = await fetch(HF_URL + '/remove-batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    hideLoading();
+    data.results.forEach(r => {
+      if (!r.success) return;
+      batchResults[r.index] = r.image;
+      const blob = base64ToBlob(r.image, 'image/png');
+      const url  = URL.createObjectURL(blob);
+      document.getElementById('batch-thumb-' + r.index).innerHTML =
+        `<img src="${url}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      document.getElementById('batch-dl-' + r.index).style.display = 'block';
+    });
+    showSuccess(`${data.results.filter(r=>r.success).length} imagens processadas!`);
+  } catch(e) {
+    hideLoading();
+    showError('Erro no batch: ' + e.message);
+  }
+}
+
+function hideBatch() { document.getElementById('batchSection').classList.remove('active'); }
+
+// ── UTILITÁRIOS ───────────────────────────
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = e => res(e.target.result.split(',')[1]);
+    r.onerror = () => rej(new Error('Falha ao ler arquivo'));
+    r.readAsDataURL(file);
+  });
+}
+
+function showLoading(text, sub) {
+  document.getElementById('loadingText').textContent    = text;
+  document.getElementById('loadingSubText').textContent = sub;
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg; el.classList.add('active');
+  document.getElementById('successMsg').classList.remove('active');
+}
+function showSuccess(msg) {
+  document.getElementById('successText').textContent = msg;
+  document.getElementById('successMsg').classList.add('active');
+  document.getElementById('errorMsg').classList.remove('active');
+}
+function hideMessages() {
+  document.getElementById('errorMsg').classList.remove('active');
+  document.getElementById('successMsg').classList.remove('active');
+}
+
+function resetAll() {
+  currentFile = currentResult = currentResultB64 = null;
+  batchFiles = []; batchResults = [];
+  fileInput.value = '';
+  document.getElementById('originalImg').src = '';
+  document.getElementById('resultImg').src   = '';
+  document.getElementById('resultImg').style.display = 'none';
+  document.getElementById('resultPlaceholder').style.display = 'block';
+  document.getElementById('workspace').classList.remove('active');
+  document.getElementById('actions').classList.remove('active');
+  document.getElementById('batchSection').classList.remove('active');
+  document.getElementById('confidenceBar').classList.remove('active');
+  document.getElementById('brushToolbar').classList.remove('active');
+  if (brushCanvas) { brushCanvas.style.display = 'none'; resetBrush(); }
+  hideMessages();
+}
+</script>
+</body>
+</html>
